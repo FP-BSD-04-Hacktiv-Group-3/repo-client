@@ -1,8 +1,7 @@
-import { Text } from "react-native";
 import styled from "styled-components/native";
 
 const Form = styled.View`
-  margin: 40px 30px;
+  margin: 40px 30px 10px 30px;
 `;
 
 const Input = styled.TextInput`

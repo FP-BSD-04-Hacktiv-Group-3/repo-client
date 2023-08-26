@@ -9,16 +9,6 @@ import {
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
 
-const COLORS = {
-  primary: "#feaf27",
-  white: "#fff",
-  black: "#0C1A30",
-  vLightGray: "#FAFAFA",
-  lightGray: "#C4C5C4",
-  darkGray: "#838589",
-  red: "#BB4648",
-};
-
 const Container = styled.View`
   height: 100%;
   display: flex;
@@ -27,13 +17,13 @@ const Container = styled.View`
 `;
 
 const HeadingTitle = styled.Text`
-  color: ${COLORS.black};
+  color: #0c1a30;
   font-size: 20px;
   font-family: DMSans_700Bold;
 `;
 
 const HeadingSubtitle = styled.Text`
-  color: ${COLORS.darkGray};
+  color: #838589;
   font-size: 14px;
   font-family: DMSans_400Regular;
   margin-top: 8px;
@@ -44,7 +34,7 @@ const Form = styled.View`
 `;
 
 const Label = styled.Text`
-  color: ${COLORS.black};
+  color: #0c1a30;
   font-size: 14px;
   font-family: DMSans_400Regular;
   margin-bottom: 10px;
@@ -57,11 +47,11 @@ const Input = styled.TextInput`
   border-radius: 10px;
   padding: 0 20px;
   margin-bottom: 20px;
-  background-color: ${COLORS.vLightGray};
+  background-color: #fafafa;
 `;
 
 const Button = styled.TouchableOpacity`
-  background-color: ${COLORS.primary};
+  background-color: #feaf27;
   border-radius: 10px;
   height: 50px;
   display: flex;
@@ -89,12 +79,12 @@ const Separator = styled.View`
 const SeparatorLine = styled.View`
   flex: 1;
   height: 2px;
-  background-color: ${COLORS.lightGray};
+  background-color: #c4c5c4;
   margin-top: 4px;
 `;
 
 const SeparatorText = styled.Text`
-  color: ${COLORS.lightGray};
+  color: #c4c5c4;
   font-size: 14px;
   font-family: DMSans_500Medium;
 `;
@@ -116,7 +106,7 @@ const LoginFooterContainer = styled.View`
 `;
 
 const ForgotPasswordLink = styled.Text`
-  color: ${COLORS.primary};
+  color: #feaf27;
   font-size: 14px;
   font-family: DMSans_500Medium;
   text-align: center;
@@ -131,13 +121,13 @@ const RegisterNavDiv = styled.View`
 `;
 
 const RegisterText = styled.Text`
-  color: ${COLORS.gray};
+  color: gray;
   font-size: 14px;
   font-family: DMSans_500Medium;
 `;
 
 const RegisterLink = styled.Text`
-  color: ${COLORS.red};
+  color: #bb4648;
   font-size: 14px;
   font-family: DMSans_500Medium;
 `;
@@ -158,11 +148,11 @@ export default function Login() {
         <HeadingSubtitle>Silahkan masukan data untuk login</HeadingSubtitle>
         <Form>
           <Label>Email</Label>
-          <Input placeholder="Email" placeholderTextColor={COLORS.lightGray} />
+          <Input placeholder="Email" placeholderTextColor="#C4C5C4" />
           <Label>Kata Sandi</Label>
           <Input
             placeholder="Password"
-            placeholderTextColor={COLORS.lightGray}
+            placeholderTextColor="#C4C5C4"
             secureTextEntry
           />
           <Button>
@@ -180,7 +170,6 @@ export default function Login() {
           style={{
             height: "120px",
             backgroundColor: "tomato",
-            borderRadius: "20px",
           }}
         >
           <Text style={{ textAlign: "center" }}>Nanti google button</Text>
