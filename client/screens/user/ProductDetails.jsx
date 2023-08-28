@@ -27,6 +27,13 @@ const ProductDetailsData = {
   rating: 5,
   total_reviews: 29,
   total_stocks: 199,
+  desc: "PREORDER - 5 Hari. Diy Sunflower Embroider Kit: Embroidery kit sudah lengkap dengan pola yg siap di sulam, tanpa harus di salin. Sudah lengkap dengan Embroidery Guide cocok untuk pemula. Mari semua kita semakin produktif dengan belajar menyulam bersama Knit Official.Id.",
+  Store: {
+    name: "Shop Larson Electronic",
+  },
+  User: {
+    username: "Maddison B",
+  },
 };
 
 const ScrollDiv = styled.ScrollView`
@@ -172,11 +179,64 @@ const ButtonText2 = styled(ButtonText)`
   color: black;
 `;
 
-const Temp = styled.View`
-  height: 100px;
+const Separator = styled.View`
+  background: #ededed;
+  padding: 0.1px;
+  elevation: 1;
+  margin: 18px 0;
+`;
+
+const StoreDetailsDiv = styled.Pressable`
   display: flex;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
+  gap: 20px;
+  padding: 0 12px;
+`;
+
+const ProfilePict = styled.Image`
+  height: 45px;
+  width: 45px;
+  padding-left: 10px;
+  resize-mode: contain;
+`;
+
+const SectionContainer = styled.View`
+  flex: 1;
+`;
+
+const UserUsername = styled.Text`
+  color: #0c1a30;
+  font-size: 14px;
+  font-family: DMSans_500Medium;
+`;
+
+const UserStatus = styled.Text`
+  color: #0c1a30;
+  font-size: 12px;
+  font-family: DMSans_400Regular;
+  margin-top: 4px;
+`;
+
+const DescDiv = styled.View`
+  color: #0c1a30;
+  font-size: 12px;
+  font-family: DMSans_400Regular;
+  padding: 12px;
+  margin-bottom: 20px;
+`;
+
+const DescTitle = styled.Text`
+  color: #0c1a30;
+  font-size: 16px;
+  font-family: DMSans_500Medium;
+  margin-bottom: 14px;
+`;
+
+const DescText = styled.Text`
+  color: #0c1a30;
+  font-size: 14px;
+  font-family: DMSans_400Regular;
 `;
 
 export default function ProductDetails({ item }) {
@@ -267,10 +327,25 @@ export default function ProductDetails({ item }) {
             </Button2>
           </ButtonDiv>
 
-          <Temp>
-            <Text>Store Details + Product Details</Text>
-            <Text>SOOON...</Text>
-          </Temp>
+          <Separator />
+          <StoreDetailsDiv
+            onPress={() => navigation.navigate("InfoSellerPage")}
+          >
+            <ProfilePict source={require("../../assets/profile/profile.png")} />
+
+            <SectionContainer>
+              <UserUsername>{ProductDetailsData?.Store?.name}</UserUsername>
+              <UserStatus>{ProductDetailsData?.User?.username}</UserStatus>
+            </SectionContainer>
+
+            <Ionicons name="chevron-forward-outline" size={24} color="black" />
+          </StoreDetailsDiv>
+          <Separator />
+
+          <DescDiv>
+            <DescTitle>Description Product</DescTitle>
+            <DescText>{ProductDetailsData.desc}</DescText>
+          </DescDiv>
         </ScrollDiv>
       </View>
     );

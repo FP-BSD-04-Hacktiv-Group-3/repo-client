@@ -3,6 +3,7 @@ import Home from "../screens/user/Home";
 import AllProducts from "../screens/user/AllProducts";
 import Cart from "../screens/user/Cart";
 import ProductDetails from "../screens/user/ProductDetails";
+import InfoSeller from "../screens/user/InfoSeller";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,13 @@ export default function HomeStack() {
       <Stack.Screen
         name="ProductDetailsPage"
         component={ProductDetails}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="InfoSellerPage"
+        component={InfoSeller}
         options={{
           headerShown: false,
         }}

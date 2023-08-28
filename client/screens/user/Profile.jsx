@@ -172,7 +172,7 @@ export default function Profile() {
               <HeaderSubitle>{profile.email}</HeaderSubitle>
             </HeaderDetailsDiv>
 
-            <HeaderPressable>
+            <HeaderPressable onPress={() => navigation.navigate("MyStore")}>
               <HeaderPressableText>
                 {profile.Store ? "Manage Store" : "Create Store"}
               </HeaderPressableText>

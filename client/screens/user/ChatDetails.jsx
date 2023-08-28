@@ -203,11 +203,7 @@ export default function ChatDetails() {
       <Container>
         <Navbar back="back" title="Pesan" />
 
-        <UserContainerDiv
-          horizontal={false}
-          showsVerticalScrollIndicator={false}
-          style={{ marginTop: 1 }}
-        >
+        <UserContainerDiv style={{ marginTop: 1 }}>
           <UserContainer>
             <ProfilePict
               source={require("../../assets/profile/profile-online.png")}
