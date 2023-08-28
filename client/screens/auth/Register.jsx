@@ -13,6 +13,7 @@ const Container = styled.View`
   display: flex;
   justify-content: center;
   padding: 0 32px;
+  background: white;
 `;
 
 const HeadingTitle = styled.Text`
