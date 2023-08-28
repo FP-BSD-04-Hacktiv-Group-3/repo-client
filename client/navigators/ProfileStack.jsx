@@ -1,23 +1,22 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Home from "../screens/user/Home";
-import Chat from "../screens/user/Chat";
-import ChatDetails from "../screens/user/ChatDetails";
+import Profile from "../screens/user/Profile";
+import Settings from "../screens/user/Settings";
 
 const Stack = createNativeStackNavigator();
 
-export default function ChatStack() {
+export default function ProfileStack() {
   return (
-    <Stack.Navigator initialRouteName="ChatPage">
+    <Stack.Navigator initialRouteName="ProfilePage">
       <Stack.Screen
-        name="ChatPage"
-        component={Chat}
+        name="ProfilePage"
+        component={Profile}
         options={{
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="ChatDetails"
-        component={ChatDetails}
+        name="Settings"
+        component={Settings}
         options={{
           headerShown: false,
         }}

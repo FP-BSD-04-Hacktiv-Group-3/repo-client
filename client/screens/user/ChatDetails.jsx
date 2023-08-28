@@ -225,14 +225,14 @@ export default function ChatDetails() {
         <ScrollDiv>
           {chat?.map((c) =>
             c.user === "Sender" ? (
-              <Msg>
+              <Msg key={c.id}>
                 <SenderMsgContainer>
                   <SenderMsgText>{c.msg}</SenderMsgText>
                 </SenderMsgContainer>
                 <SenderTimeText>{c.time}</SenderTimeText>
               </Msg>
             ) : (
-              <Msg>
+              <Msg key={c.id}>
                 <ReceiverMsgContainer>
                   <ReceiverMsgText>{c.msg}</ReceiverMsgText>
                 </ReceiverMsgContainer>

@@ -76,7 +76,7 @@ const ChatFrontmatter = styled.View`
 `;
 
 const ChatRowUsername = styled.Text`
-  font-size: 16px;
+  font-size: 14px;
   font-family: DMSans_500Medium;
 `;
 
