@@ -147,6 +147,10 @@ const ButtonDiv = styled.View`
   margin: 10px 0;
 `;
 
+const ButtonDiv2 = styled(ButtonDiv)`
+  gap: 14px;
+`;
+
 const Button = styled.TouchableOpacity`
   border-radius: 10px;
   height: 50px;
@@ -161,8 +165,18 @@ const Button1 = styled(Button)`
   background-color: #feaf27;
 `;
 
+const Button1Seller = styled(Button)`
+  border: 1px solid #feaf27;
+  flex: 1;
+`;
+
 const Button2 = styled(Button)`
   border: 1px solid #feaf27;
+`;
+
+const Button2Seller = styled(Button)`
+  background-color: #bb4648;
+  flex: 1;
 `;
 
 const ButtonText = styled.Text`
@@ -284,6 +298,8 @@ export default function ProductDetails({ item }) {
 
           <DFSubtitleDiv>
             <DFPrice>{formatPrice(ProductDetailsData.price)}</DFPrice>
+
+            {/* kalo user */}
             <DFSubtitleIconDiv>
               <StyledIcon
                 source={require("../../assets/icons/ic_menu_wishlist_outline.png")}
@@ -318,6 +334,7 @@ export default function ProductDetails({ item }) {
             </StockContainer>
           </DFSubtitleDiv>
 
+          {/* kalo user */}
           <ButtonDiv>
             <Button1>
               <ButtonText1>Tambah ke keranjang</ButtonText1>
@@ -326,6 +343,18 @@ export default function ProductDetails({ item }) {
               <ButtonText2>Beli Sekarang</ButtonText2>
             </Button2>
           </ButtonDiv>
+
+          {/* kalo produk nya si seller */}
+          {/* <ButtonDiv2>
+            <Button1Seller
+              onPress={() => navigation.navigate("EditProductForm")}
+            >
+              <ButtonText2>Edit Produk</ButtonText2>
+            </Button1Seller>
+            <Button2Seller>
+              <ButtonText1>Hapus Produk</ButtonText1>
+            </Button2Seller>
+          </ButtonDiv2> */}
 
           <Separator />
           <StoreDetailsDiv

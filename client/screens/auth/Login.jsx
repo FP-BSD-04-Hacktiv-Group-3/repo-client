@@ -1,6 +1,5 @@
 import { Text, View } from "react-native";
 import styled from "styled-components/native";
-// import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 
 import {
   useFonts,
@@ -175,13 +174,6 @@ export default function Login() {
         >
           <Text style={{ textAlign: "center" }}>Nanti google button</Text>
         </View>
-
-        {/* <GoogleSigninButton
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-            onPress={signIn}
-            disabled={this.state.isSigninInProgress}
-        /> */}
 
         <LoginFooterContainer>
           <ForgotPasswordLink>Lupa Password?</ForgotPasswordLink>

@@ -24,6 +24,8 @@ const profile = {
   },
 };
 
+const profile2 = null;
+
 const ScrollDiv = styled.ScrollView`
   background: white;
   flex: 1;
@@ -172,34 +174,42 @@ export default function Profile() {
               <HeaderSubitle>{profile.email}</HeaderSubitle>
             </HeaderDetailsDiv>
 
-            <HeaderPressable onPress={() => navigation.navigate("MyStore")}>
+            <HeaderPressable
+              onPress={() =>
+                navigation.navigate(profile?.Store ? "MyStore" : "AddStoreForm")
+              }
+            >
               <HeaderPressableText>
-                {profile.Store ? "Manage Store" : "Create Store"}
+                {profile?.Store ? "Manage Store" : "Create Store"}
               </HeaderPressableText>
             </HeaderPressable>
           </Header>
 
-          <StoreDiv>
-            <StoreRow>
-              <IconImg source={require("../../assets/icons/store.png")} />
-              <StoreText>{profile.Store.name}</StoreText>
-            </StoreRow>
-            <StoreRow>
-              <IconImg source={require("../../assets/icons/location.png")} />
-              <StoreText>{profile.Store.location}</StoreText>
-            </StoreRow>
-            <StoreRow>
-              <IconImg source={require("../../assets/icons/time.png")} />
-              <StoreText>{profile.Store.created_at}</StoreText>
-            </StoreRow>
-            <StoreRow>
-              <IconImg source={require("../../assets/icons/box.png")} />
-              <StoreText>
-                {profile.Store.total_products}&nbsp;
-                {profile.Store.total_products > 1 ? "products" : "product"}
-              </StoreText>
-            </StoreRow>
-          </StoreDiv>
+          {profile ? (
+            <StoreDiv>
+              <StoreRow>
+                <IconImg source={require("../../assets/icons/store.png")} />
+                <StoreText>{profile.Store.name}</StoreText>
+              </StoreRow>
+              <StoreRow>
+                <IconImg source={require("../../assets/icons/location.png")} />
+                <StoreText>{profile.Store.location}</StoreText>
+              </StoreRow>
+              <StoreRow>
+                <IconImg source={require("../../assets/icons/time.png")} />
+                <StoreText>{profile.Store.created_at}</StoreText>
+              </StoreRow>
+              <StoreRow>
+                <IconImg source={require("../../assets/icons/box.png")} />
+                <StoreText>
+                  {profile.Store.total_products}&nbsp;
+                  {profile.Store.total_products > 1 ? "products" : "product"}
+                </StoreText>
+              </StoreRow>
+            </StoreDiv>
+          ) : (
+            <View style={{ height: 20 }} />
+          )}
 
           <Separator />
 
