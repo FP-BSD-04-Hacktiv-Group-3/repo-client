@@ -9,12 +9,12 @@ const Input = styled.TextInput`
   height: 50px;
   border: 1px solid #f0f0f0;
   border-radius: 10px;
-  padding: 0 20px;
+  padding: 0 54px;
   margin-bottom: 20px;
   background-color: #fafafa;
 `;
 
-const SearchIconDiv = styled.View`
+const SearchIconDiv = styled.Pressable`
   position: absolute;
   height: 50px;
   right: 20px;
@@ -28,6 +28,20 @@ const SearchIcon = styled.Image`
   height: 20px;
 `;
 
+const ScanIconDiv = styled.Pressable`
+  position: absolute;
+  height: 50px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ScanIcon = styled.Image`
+  width: 20px;
+  height: 20px;
+`;
+
 export default function Search() {
   return (
     <Form>
@@ -35,6 +49,12 @@ export default function Search() {
         placeholder="Produk apa yang mau kamu cari?"
         placeholderTextColor="#C4C5C4"
       />
+      <ScanIconDiv>
+        <ScanIcon
+          resizeMode="cover"
+          source={require("../assets/icons/camera.png")}
+        />
+      </ScanIconDiv>
       <SearchIconDiv>
         <SearchIcon
           resizeMode="cover"

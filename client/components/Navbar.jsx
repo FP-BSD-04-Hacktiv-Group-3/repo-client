@@ -81,8 +81,17 @@ export default function Navbar({ back, title }) {
           </>
         )}
 
-        {title === "Pesan" || title === "Pengaturan" ? (
+        {title === "Pesan" ||
+        title === "Pengaturan" ||
+        title === "Keranjang" ? (
           <NavIconDiv />
+        ) : title === "Dashboard Penjual" ? (
+          <NavIconDiv>
+            <NavIcon
+              source={require("../assets/icons/edit.png")}
+              resizeMode="contain"
+            />
+          </NavIconDiv>
         ) : (
           <NavIconDiv onPress={() => navigation.navigate("CartPage")}>
             <NavIcon
