@@ -1,7 +1,7 @@
 import styled from "styled-components/native";
 
 const Form = styled.View`
-  margin: 40px 30px 10px 30px;
+  margin: 20px 24px 0px 24px;
 `;
 
 const Input = styled.TextInput`

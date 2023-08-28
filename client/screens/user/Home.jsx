@@ -1,10 +1,12 @@
-import { FlatList, Text } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import styled from "styled-components/native";
 import Navbar from "../../components/Navbar";
 import Search from "../../components/Search";
 import Banner from "../../components/Banner";
 import Category from "../../components/Category";
 import FeaturedProductCard from "../../components/FeaturedProductCard";
+import ItemNotFound from "../../components/ItemNotFound";
+import { useNavigation } from "@react-navigation/native";
 
 import {
   useFonts,
@@ -100,10 +102,14 @@ const products = [
   },
 ];
 
-const ScrollDiv = styled.ScrollView``;
+const products2 = [];
+
+const ScrollDiv = styled.ScrollView`
+  background: white;
+`;
 
 const BannerDiv = styled.View`
-  padding: 0 0 30px 28px;
+  padding: 0 0 24px 24px;
 `;
 
 const HeaderContainer = styled.View`
@@ -112,7 +118,7 @@ const HeaderContainer = styled.View`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
-  padding: 0 4px;
+  padding-left: 4px;
   padding-right: 28px;
 `;
 
@@ -122,6 +128,8 @@ const HeaderTitle = styled.Text`
   font-family: DMSans_500Medium;
 `;
 
+const HeaderLinkDiv = styled.Pressable``;
+
 const HeaderLink = styled.Text`
   color: #bb4648;
   font-size: 14px;
@@ -130,27 +138,33 @@ const HeaderLink = styled.Text`
 
 const BannerAdsDiv = styled.View`
   width: 100%;
+  padding: 0 10px 0 24px;
+  margin-bottom: 18px;
+`;
+
+const BannerAdsDivIn = styled.View`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 18px;
 `;
 
 const BannerAds = styled.Image`
   width: 100%;
-  height: 160px;
+  height: 180px;
+  padding-left: 10px;
   resize-mode: contain;
-  margin-left: 18px;
 `;
 
 const BannerAds2 = styled.Image`
   width: 100%;
-  height: 184px;
+  height: 188px;
+  margin-left: 12px;
   resize-mode: contain;
-  margin-left: 24px;
 `;
 
 export default function Home() {
+  const navigation = useNavigation();
+
   let [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
@@ -161,108 +175,196 @@ export default function Home() {
     return <Text>Loading ...</Text>;
   } else {
     return (
-      <ScrollDiv horizontal={false}>
+      <View style={{ paddingBottom: 80 }}>
         <Navbar />
-        <Search />
 
-        <BannerDiv>
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            data={ads}
-            renderItem={({ item }) => <Banner content={item} />}
-          />
-        </BannerDiv>
+        <ScrollDiv
+          horizontal={false}
+          showsVerticalScrollIndicator={false}
+          style={{ marginTop: 1 }}
+        >
+          <Search />
 
-        <BannerDiv>
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            data={categories}
-            renderItem={({ item }) => <Category content={item} />}
-          />
-        </BannerDiv>
+          {products.length === 0 ? (
+            <ItemNotFound
+              image={require("../../assets/vector/pnf.png")}
+              title="Produk tidak ditemukan"
+              subtitle="Coba cari kata lain untuk mencari produk yang kamu inginkan"
+            />
+          ) : (
+            <>
+              <BannerDiv>
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  horizontal
+                  data={ads}
+                  renderItem={({ item }) => <Banner content={item} />}
+                />
+              </BannerDiv>
 
-        <BannerDiv style={{ marginTop: 10 }}>
-          <HeaderContainer>
-            <HeaderTitle>Featured Products</HeaderTitle>
-            <HeaderLink>See All</HeaderLink>
-          </HeaderContainer>
+              <BannerDiv>
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  horizontal
+                  data={categories}
+                  renderItem={({ item }) => <Category content={item} />}
+                />
+              </BannerDiv>
 
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            data={products}
-            renderItem={({ item }) => <FeaturedProductCard content={item} />}
-          />
-        </BannerDiv>
+              <BannerDiv style={{ marginTop: 10 }}>
+                <HeaderContainer>
+                  <HeaderTitle>Featured Products</HeaderTitle>
+                  <HeaderLinkDiv>
+                    <HeaderLink
+                      onPress={() =>
+                        navigation.navigate("AllProductsPage", {
+                          title: "Featured Products",
+                          items: products,
+                        })
+                      }
+                    >
+                      See All
+                    </HeaderLink>
+                  </HeaderLinkDiv>
+                </HeaderContainer>
 
-        <BannerAdsDiv>
-          <BannerAds source={require("../../assets/ads/cable_multifunc.png")} />
-        </BannerAdsDiv>
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  horizontal
+                  data={products}
+                  renderItem={({ item }) => (
+                    <FeaturedProductCard content={item} />
+                  )}
+                />
+              </BannerDiv>
 
-        <BannerDiv>
-          <HeaderContainer>
-            <HeaderTitle>Best Sellers</HeaderTitle>
-            <HeaderLink>See All</HeaderLink>
-          </HeaderContainer>
+              <BannerAdsDiv>
+                <BannerAdsDivIn>
+                  <BannerAds
+                    source={require("../../assets/ads/cable_multifunc.png")}
+                  />
+                </BannerAdsDivIn>
+              </BannerAdsDiv>
 
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            data={products}
-            renderItem={({ item }) => <FeaturedProductCard content={item} />}
-          />
-        </BannerDiv>
+              <BannerDiv>
+                <HeaderContainer>
+                  <HeaderTitle>Best Sellers</HeaderTitle>
+                  <HeaderLinkDiv>
+                    <HeaderLink
+                      onPress={() =>
+                        navigation.navigate("AllProductsPage", {
+                          title: "Best Sellers",
+                          items: products,
+                        })
+                      }
+                    >
+                      See All
+                    </HeaderLink>
+                  </HeaderLinkDiv>
+                </HeaderContainer>
 
-        <BannerAdsDiv>
-          <BannerAds2
-            source={require("../../assets/ads/modular_headphones.png")}
-          />
-        </BannerAdsDiv>
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  horizontal
+                  data={products}
+                  renderItem={({ item }) => (
+                    <FeaturedProductCard content={item} />
+                  )}
+                />
+              </BannerDiv>
 
-        <BannerDiv>
-          <HeaderContainer>
-            <HeaderTitle>New Arrivals</HeaderTitle>
-            <HeaderLink>See All</HeaderLink>
-          </HeaderContainer>
+              <BannerAdsDiv>
+                <BannerAdsDivIn>
+                  <BannerAds2
+                    source={require("../../assets/ads/modular_headphones.png")}
+                  />
+                </BannerAdsDivIn>
+              </BannerAdsDiv>
 
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            data={products}
-            renderItem={({ item }) => <FeaturedProductCard content={item} />}
-          />
-        </BannerDiv>
+              <BannerDiv>
+                <HeaderContainer>
+                  <HeaderTitle>New Arrivals</HeaderTitle>
+                  <HeaderLinkDiv>
+                    <HeaderLink
+                      onPress={() =>
+                        navigation.navigate("AllProductsPage", {
+                          title: "New Arrivals",
+                          items: products,
+                        })
+                      }
+                    >
+                      See All
+                    </HeaderLink>
+                  </HeaderLinkDiv>
+                </HeaderContainer>
 
-        <BannerDiv>
-          <HeaderContainer>
-            <HeaderTitle>Top Related Products</HeaderTitle>
-            <HeaderLink>See All</HeaderLink>
-          </HeaderContainer>
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  horizontal
+                  data={products}
+                  renderItem={({ item }) => (
+                    <FeaturedProductCard content={item} />
+                  )}
+                />
+              </BannerDiv>
 
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            data={products}
-            renderItem={({ item }) => <FeaturedProductCard content={item} />}
-          />
-        </BannerDiv>
+              <BannerDiv>
+                <HeaderContainer>
+                  <HeaderTitle>Top Related Products</HeaderTitle>
+                  <HeaderLinkDiv>
+                    <HeaderLink
+                      onPress={() =>
+                        navigation.navigate("AllProductsPage", {
+                          title: "Top Related Products",
+                          items: products,
+                        })
+                      }
+                    >
+                      See All
+                    </HeaderLink>
+                  </HeaderLinkDiv>
+                </HeaderContainer>
 
-        <BannerDiv>
-          <HeaderContainer>
-            <HeaderTitle>Special Offers</HeaderTitle>
-            <HeaderLink>See All</HeaderLink>
-          </HeaderContainer>
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  horizontal
+                  data={products}
+                  renderItem={({ item }) => (
+                    <FeaturedProductCard content={item} />
+                  )}
+                />
+              </BannerDiv>
 
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            data={products}
-            renderItem={({ item }) => <FeaturedProductCard content={item} />}
-          />
-        </BannerDiv>
-      </ScrollDiv>
+              <BannerDiv>
+                <HeaderContainer>
+                  <HeaderTitle>Special Offers</HeaderTitle>
+                  <HeaderLinkDiv>
+                    <HeaderLink
+                      onPress={() =>
+                        navigation.navigate("AllProductsPage", {
+                          title: "Special Offers",
+                          items: products,
+                        })
+                      }
+                    >
+                      See All
+                    </HeaderLink>
+                  </HeaderLinkDiv>
+                </HeaderContainer>
+
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  horizontal
+                  data={products}
+                  renderItem={({ item }) => (
+                    <FeaturedProductCard content={item} />
+                  )}
+                />
+              </BannerDiv>
+            </>
+          )}
+        </ScrollDiv>
+      </View>
     );
   }
 }

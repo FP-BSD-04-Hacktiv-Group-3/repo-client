@@ -1,11 +1,14 @@
+import { Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Login from "../screens/auth/Login";
-import Home from "../screens/user/Home";
-import Splash from "../screens/on-board/Splash";
-import GetStarted from "../screens/on-board/GetStarted";
-import { Image, View } from "react-native";
 import styled from "styled-components/native";
+import { FontAwesome } from "@expo/vector-icons";
+import HomeStack from "./HomeStack";
+import Profile from "../screens/user/Profile";
+import Order from "../screens/user/Order";
+import Wishlist from "../screens/user/Wishlist";
+import { Ionicons } from "@expo/vector-icons";
+import ChatStack from "./ChatStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -26,19 +29,19 @@ export default function TabNav() {
             backgroundColor: "white",
             borderTopWidth: 0,
             padding: 8,
-            color: "red",
+            color: "0C1A30",
+          },
+          tabBarStyle: {
+            paddingBottom: 5,
+            paddingTop: 6,
           },
         }}
       >
         <Tab.Screen
           name="Home"
-          component={Home}
+          component={HomeStack}
           options={{
             tabBarIcon: ({ focused, color, size }) => {
-              const iconName = focused
-                ? "ic_menu_home"
-                : "ic_menu_home_outline";
-
               return (
                 <StyledIcon
                   source={
@@ -55,7 +58,7 @@ export default function TabNav() {
         />
         <Tab.Screen
           name="Wishlist"
-          component={Login}
+          component={Wishlist}
           options={{
             tabBarIcon: ({ focused, color, size }) => {
               return (
@@ -73,8 +76,30 @@ export default function TabNav() {
           }}
         />
         <Tab.Screen
+          name="Chat"
+          component={ChatStack}
+          options={{
+            tabBarIcon: ({ focused, color, size }) => {
+              const iconColor = focused ? "#FF7537" : "#0C1A30";
+              return (
+                // <Ionicons
+                //   name="ios-chatbubbles-outline"
+                //   size={22}
+                //   color={iconColor}
+                // />
+                <Ionicons
+                  name="md-chatbubble-ellipses-outline"
+                  size={22}
+                  color={iconColor}
+                />
+              );
+            },
+            headerShown: false,
+          }}
+        />
+        <Tab.Screen
           name="Order"
-          component={Splash}
+          component={Order}
           options={{
             tabBarIcon: ({ focused, color, size }) => {
               return (
@@ -93,20 +118,12 @@ export default function TabNav() {
         />
         <Tab.Screen
           name="Account"
-          component={GetStarted}
+          component={Profile}
           options={{
-            // tabBarIcon: ({ focused, color, size }) => {
-            //   return (
-            //     <StyledIcon
-            //       source={
-            //         focused
-            //           ? require("../assets/icons/ic_menu_wishlist.png")
-            //           : require("../assets/icons/ic_menu_wishlist_outline.png")
-            //       }
-            //       size={22}
-            //     />
-            //   );
-            // },
+            tabBarIcon: ({ focused, color, size }) => {
+              const iconColor = focused ? "#FF7537" : "#0C1A30";
+              return <FontAwesome name="user-o" size={21} color={iconColor} />;
+            },
             headerShown: false,
           }}
         />

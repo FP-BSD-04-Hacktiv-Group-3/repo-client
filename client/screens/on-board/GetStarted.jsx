@@ -22,18 +22,17 @@ const slides = [
   },
   {
     id: "2",
-    image: require("../../assets/vector/marketplace.jpg"),
+    image: require("../../assets/vector/discover_unique.jpg"),
     title: "Discover Unique Creations",
     subtitle:
       "Unveil a world of one-of-a-kind treasures and handcrafted wonders",
   },
   {
     id: "3",
-    // image: require("../../assets/brand/icon.png"),
-    image: require("../../assets/vector/marketplace.jpg"),
     type: "intro",
-    title: "Tacotta",
-    subtitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+    title: "Welcome to Tacotta!",
+    subtitle:
+      "Our art bridges continents, inviting you to explore Indonesia's creative heartbeat",
   },
 ];
 
@@ -89,20 +88,24 @@ const FooterButton = styled.TouchableOpacity`
 
 const ImgContainer = styled.View`
   width: ${width}px;
-  height: 100%;
+  height: 75%;
   align-items: center;
   justify-content: center;
   display: flex;
-  padding-top: 80px;
+  padding-top: 60px;
+`;
+
+// background: rgba(254, 175, 39, 0.07);
+const ImgIconContainer = styled.View`
+  background: rgba(187, 70, 72, 0.03);
+  border-radius: 100px 0 100px 0;
+  padding: 20px;
+  border: 2px solid black;
 `;
 
 const ImageIcon = styled.Image`
   width: 100%;
   aspect-ratio: ${(props) => props.aspectRatio || 1};
-`;
-
-const ImageLogo = styled.Image`
-  margin-top: 40px;
 `;
 
 export default function GetStarted({ navigation }) {
@@ -227,8 +230,8 @@ export default function GetStarted({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.white }}>
-      <StatusBar backgroundColor={COLORS.white} />
+    <SafeAreaView style={{ backgroundColor: "white" }}>
+      <StatusBar backgroundColor="white" />
       <FlatList
         ref={ref}
         onMomentumScrollEnd={updateCurrentSlideIndex}
@@ -239,18 +242,31 @@ export default function GetStarted({ navigation }) {
         pagingEnabled
         renderItem={({ item }) =>
           item?.type === "intro" ? (
+            // <SlideContainer>
+            //   <ImgContainer>
+            //     <ImageIcon
+            //       resizeMode="cover"
+            //       source={require("../../assets/brand/icon.png")}
+            //       aspectRatio={1 / 1}
+            //     />
+            //     <ImageLogo
+            //       resizeMode="cover"
+            //       source={require("../../assets/brand/logo_shadow.png")}
+            //     />
+            //   </ImgContainer>
+            // </SlideContainer>
             <SlideContainer>
               <ImgContainer>
-                <ImageIcon
-                  resizeMode="cover"
-                  source={require("../../assets/brand/icon.png")}
-                  aspectRatio={1 / 1}
-                />
-                <ImageLogo
-                  resizeMode="cover"
-                  source={require("../../assets/brand/logo_shadow.png")}
-                />
+                <ImgIconContainer>
+                  <ImageIcon
+                    source={require("../../assets/brand/icon.png")}
+                    resizeMode="cover"
+                    aspectRatio={1 / 1}
+                  />
+                </ImgIconContainer>
               </ImgContainer>
+              <SlideTitle>{item?.title}</SlideTitle>
+              <SlideSubtitle>{item?.subtitle}</SlideSubtitle>
             </SlideContainer>
           ) : (
             <SlideContainer>
