@@ -63,7 +63,7 @@ export const SwitchContainer = styled.View`
   height: 30px;
 `;
 
-export default function Settings() {
+export default function Language() {
   const navigation = useNavigation();
 
   let [fontsLoaded] = useFonts({
@@ -77,45 +77,16 @@ export default function Settings() {
   } else {
     return (
       <Container>
-        <Navbar back="back" title="Pengaturan" />
+        <Navbar back="back" title="Bahasa" />
 
         <Div>
-          <ItemRow onPress={() => navigation.navigate("EditProfileForm")}>
-            <ItemIcon source={require("../../assets/icons/edit3.png")} />
-            <ItemText>Edit Profile</ItemText>
-            <Ionicons name="chevron-forward-outline" size={24} color="black" />
-          </ItemRow>
-          <ItemRow onPress={() => navigation.navigate("Language")}>
-            <ItemIcon source={require("../../assets/icons/language.png")} />
-            <ItemText>Bahasa</ItemText>
-            <NavDiv>
-              <ItemText2>Bahasa</ItemText2>
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="black"
-              />
-            </NavDiv>
+          <ItemRow>
+            {/* <ItemIcon source={require("../../assets/icons/faq.png")} /> */}
+            <ItemText>Bahasa Indonesia</ItemText>
           </ItemRow>
           <ItemRow>
-            <ItemIcon source={require("../../assets/icons/mode.png")} />
-            <ItemText>Mode Terang</ItemText>
-            <NavDiv>
-              <SwitchContainer>
-                {/* <Switch value={isDarkMode} onValueChange={toggleDarkMode} /> */}
-                <Switch />
-              </SwitchContainer>
-            </NavDiv>
-          </ItemRow>
-          <ItemRow>
-            <ItemIcon source={require("../../assets/icons/faq.png")} />
-            <ItemText>FAQ</ItemText>
-            <Ionicons name="chevron-forward-outline" size={24} color="black" />
-          </ItemRow>
-          <ItemRow>
-            <ItemIcon source={require("../../assets/icons/help.png")} />
-            <ItemText>Pusat Bantuan</ItemText>
-            <Ionicons name="chevron-forward-outline" size={24} color="black" />
+            {/* <ItemIcon source={require("../../assets/icons/help.png")} /> */}
+            <ItemText>English</ItemText>
           </ItemRow>
         </Div>
       </Container>

@@ -5,10 +5,10 @@ import styled from "styled-components/native";
 import { FontAwesome } from "@expo/vector-icons";
 import HomeStack from "./HomeStack";
 import ProfileStack from "./ProfileStack";
-import Order from "../screens/user/Order";
 import Wishlist from "../screens/user/Wishlist";
 import { Ionicons } from "@expo/vector-icons";
 import ChatStack from "./ChatStack";
+import OrderStack from "./OrderStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -98,8 +98,8 @@ export default function TabNav() {
           }}
         />
         <Tab.Screen
-          name="Order"
-          component={Order}
+          name="Orders"
+          component={OrderStack}
           options={{
             tabBarIcon: ({ focused, color, size }) => {
               return (

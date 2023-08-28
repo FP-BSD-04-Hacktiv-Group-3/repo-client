@@ -1,6 +1,7 @@
 import { Text } from "react-native";
 import styled from "styled-components/native";
 import formatPrice from "../utils/formatPrice";
+import { useNavigation } from "@react-navigation/native";
 
 import {
   useFonts,
@@ -9,7 +10,7 @@ import {
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
 
-const CardDiv = styled.View`
+const CardDiv = styled.Pressable`
   width: 50%;
   padding: 0 8px;
   margin-bottom: 14px;
@@ -67,6 +68,8 @@ const DetailsText = styled.Text`
 `;
 
 export default function AllProductCard({ content }) {
+  const navigation = useNavigation();
+
   let [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
@@ -77,7 +80,13 @@ export default function AllProductCard({ content }) {
     return <Text>Loading ...</Text>;
   } else {
     return (
-      <CardDiv>
+      <CardDiv
+        onPress={() =>
+          navigation.navigate("ProductDetailsPage", {
+            item: content,
+          })
+        }
+      >
         <Card>
           <CardImg source={content?.image} />
           <CardTitle>{content?.name}</CardTitle>

@@ -259,9 +259,11 @@ export default function MyStore() {
 
           <ProductsContainer>
             <ProductsHeader>
-              <HeaderTitle>Products</HeaderTitle>
-              <HeaderPressable onPress={() => navigation.navigate("MyStore")}>
-                <HeaderPressableText>+ Add Product</HeaderPressableText>
+              <HeaderTitle>Produk</HeaderTitle>
+              <HeaderPressable
+                onPress={() => navigation.navigate("AddProductForm")}
+              >
+                <HeaderPressableText>+ Tambah Produk</HeaderPressableText>
               </HeaderPressable>
             </ProductsHeader>
           </ProductsContainer>

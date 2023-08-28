@@ -80,16 +80,22 @@ export default function Navbar({ back, title }) {
             />
           </>
         )}
-
         {title === "Pesan" ||
         title === "Pengaturan" ||
-        title === "Keranjang" ? (
+        title === "Bahasa" ||
+        title === "Keranjang" ||
+        title === "Edit Profile" ||
+        title === "Tambah Produk" ||
+        title === "Edit Produk" ||
+        title === "Edit Store" ||
+        title === "Tambah Store" ? (
           <NavIconDiv />
         ) : title === "Dashboard Penjual" ? (
-          <NavIconDiv>
+          <NavIconDiv onPress={() => navigation.navigate("EditStoreForm")}>
             <NavIcon
               source={require("../assets/icons/edit.png")}
               resizeMode="contain"
+              EditStoreForm
             />
           </NavIconDiv>
         ) : (
