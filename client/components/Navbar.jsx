@@ -81,7 +81,7 @@ export default function Navbar({ back, title }) {
           </>
         )}
 
-        {title === "Pesan" ? (
+        {title === "Pesan" || title === "Pengaturan" ? (
           <NavIconDiv />
         ) : (
           <NavIconDiv onPress={() => navigation.navigate("CartPage")}>

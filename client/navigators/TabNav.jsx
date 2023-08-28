@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import styled from "styled-components/native";
 import { FontAwesome } from "@expo/vector-icons";
 import HomeStack from "./HomeStack";
-import Profile from "../screens/user/Profile";
+import ProfileStack from "./ProfileStack";
 import Order from "../screens/user/Order";
 import Wishlist from "../screens/user/Wishlist";
 import { Ionicons } from "@expo/vector-icons";
@@ -118,7 +118,7 @@ export default function TabNav() {
         />
         <Tab.Screen
           name="Account"
-          component={Profile}
+          component={ProfileStack}
           options={{
             tabBarIcon: ({ focused, color, size }) => {
               const iconColor = focused ? "#FF7537" : "#0C1A30";
