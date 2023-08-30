@@ -1,7 +1,22 @@
-import { FlatList, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import styled from "styled-components/native";
 import Navbar from "../../components/Navbar";
 import { FontAwesome } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import { db } from "../../config/firebase/firebase";
+import formatTime from "../../utils/formatTime";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  Timestamp,
+  onSnapshot,
+} from "firebase/firestore";
+import "react-native-get-random-values";
+import { v4 as uuid } from "uuid";
+import { user, senderId } from "../../config/configDummy";
 
 import {
   useFonts,
@@ -9,51 +24,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
-
-const chat = [
-  {
-    id: 1,
-    user: "Sender",
-    msg: "Hi Jack!, Mau nanya produk tipe a stok nya masih banyak ga?",
-    time: "4:35 pm",
-  },
-  {
-    id: 2,
-    user: "Receiver",
-    msg: "Hi, untuk saat ini, stoknya kosong kak.",
-    time: "4:37 pm",
-  },
-  {
-    id: 3,
-    user: "Sender",
-    msg: "Kalo tipe c? variannya ada apa aja?",
-    time: "4:38 pm",
-  },
-  {
-    id: 4,
-    user: "Receiver",
-    msg: "Itu stoknya banyak kak, untuk varian bole dicek langsung diprofil toko kami.",
-    time: "4:50 pm",
-  },
-  {
-    id: 5,
-    user: "Receiver",
-    msg: "Boleh di cek juga promonya,,",
-    time: "4:52 pm",
-  },
-  {
-    id: 6,
-    user: "Sender",
-    msg: "Baik kak, trima kasih infonya",
-    time: "5:15 pm",
-  },
-  {
-    id: 7,
-    user: "Receiver",
-    msg: "Sip,,,",
-    time: "5:20 pm",
-  },
-];
+import Loading from "../../components/Loading";
 
 const Container = styled.View`
   flex: 1;
@@ -94,7 +65,7 @@ const UserUsername = styled.Text`
 `;
 
 const UserStatus = styled.Text`
-  color: #06c630;
+  color: #ff7537;
   font-size: 12px;
   font-family: DMSans_500Medium;
 `;
@@ -189,7 +160,78 @@ const ReceiverTimeText = styled(TimeText)`
   text-align: left;
 `;
 
-export default function ChatDetails() {
+export default function ChatDetails({ route }) {
+  // const { data } = route.params; params = store id nya
+  let docSnap;
+  const ChatId = senderId + 1;
+  const [text, setText] = useState("");
+  const [data, setData] = useState([]);
+
+  const docRef = doc(db, "chats", ChatId);
+
+  async function defineDocSnap() {
+    docSnap = await getDoc(docRef);
+  }
+
+  async function send() {
+    await defineDocSnap();
+
+    //kalo chat roomnya belum ada...
+    if (!docSnap?.exists()) {
+      createDB();
+    }
+
+    await updateDoc(docRef, {
+      messages: arrayUnion({
+        id: uuid(),
+        name: user,
+        senderId,
+        text,
+        date: Timestamp.now(),
+      }),
+      ["Message" + ".latest"]: Timestamp.now(),
+      ["Message" + ".lastMessage"]: text,
+    });
+
+    setText("");
+  }
+
+  async function createDB() {
+    try {
+      await setDoc(docRef, {
+        messages: [],
+      });
+
+      const unsub = onSnapshot(docRef, (doc) => {
+        const { messages: data } = doc.data();
+        const fullData = doc.data();
+
+        setData(data);
+      });
+    } catch (error) {
+      console.log(error, 63);
+    }
+  }
+
+  async function onStart() {
+    await defineDocSnap();
+
+    // kalo ada history chatnya di database
+    if (docSnap?.exists()) {
+      const unsub = onSnapshot(docRef, (doc) => {
+        const { messages: data } = doc.data();
+        const fullData = doc.data();
+        setData(data);
+      });
+    } else {
+      console.log("gaada chat");
+    }
+  }
+
+  useEffect(() => {
+    onStart();
+  }, []);
+
   let [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
@@ -197,7 +239,7 @@ export default function ChatDetails() {
   });
 
   if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
+    return <Loading />;
   } else {
     return (
       <Container>
@@ -205,13 +247,11 @@ export default function ChatDetails() {
 
         <UserContainerDiv style={{ marginTop: 1 }}>
           <UserContainer>
-            <ProfilePict
-              source={require("../../assets/profile/profile-online.png")}
-            />
+            <ProfilePict source={require("../../assets/profile/profile.png")} />
 
             <SectionContainer>
               <UserUsername>John Doe</UserUsername>
-              <UserStatus>Online</UserStatus>
+              <UserStatus>johndoe@email.com</UserStatus>
             </SectionContainer>
           </UserContainer>
         </UserContainerDiv>
@@ -219,20 +259,20 @@ export default function ChatDetails() {
         <Separator />
 
         <ScrollDiv>
-          {chat?.map((c) =>
-            c.user === "Sender" ? (
-              <Msg key={c.id}>
+          {data?.map((c) =>
+            c.senderId === senderId ? (
+              <Msg key={c?.id}>
                 <SenderMsgContainer>
-                  <SenderMsgText>{c.msg}</SenderMsgText>
+                  <SenderMsgText>{c?.text}</SenderMsgText>
                 </SenderMsgContainer>
-                <SenderTimeText>{c.time}</SenderTimeText>
+                <SenderTimeText>{formatTime(c?.date)}</SenderTimeText>
               </Msg>
             ) : (
-              <Msg key={c.id}>
+              <Msg key={c?.id}>
                 <ReceiverMsgContainer>
-                  <ReceiverMsgText>{c.msg}</ReceiverMsgText>
+                  <ReceiverMsgText>{c?.text}</ReceiverMsgText>
                 </ReceiverMsgContainer>
-                <ReceiverTimeText>{c.time}</ReceiverTimeText>
+                <ReceiverTimeText>{formatTime(c?.date)}</ReceiverTimeText>
               </Msg>
             )
           )}
@@ -240,8 +280,13 @@ export default function ChatDetails() {
         </ScrollDiv>
 
         <ChatInputDiv>
-          <Input placeholder="Type message..." placeholderTextColor="#C4C5C4" />
-          <Button>
+          <Input
+            placeholder="Type message..."
+            placeholderTextColor="#C4C5C4"
+            onChangeText={(text) => setText(text)}
+            value={text}
+          />
+          <Button onPress={send}>
             <FontAwesome name="send" size={22} color="white" />
           </Button>
         </ChatInputDiv>

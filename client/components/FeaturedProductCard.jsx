@@ -1,4 +1,4 @@
-import { Text } from "react-native";
+import { Image, Text, View } from "react-native";
 import styled from "styled-components/native";
 import formatPrice from "../utils/formatPrice";
 import { useNavigation } from "@react-navigation/native";
@@ -9,6 +9,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import Loading from "./Loading";
 
 const CardDiv = styled.Pressable`
   width: 150px;
@@ -67,6 +68,21 @@ const DetailsText = styled.Text`
   font-family: DMSans_400Regular;
 `;
 
+// const AddWLIcon = styled.View`
+//   position: absolute;
+//   padding: 20px;
+//   top: 0px;
+//   right: 0px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// `;
+
+// const StyledIcon = styled(Image)`
+//   width: ${(props) => `${props.size}px` || "24px"};
+//   height: ${(props) => `${props.size}px` || "24px"};
+// `;
+
 export default function FeaturedProductCard({ content }) {
   const navigation = useNavigation();
 
@@ -76,9 +92,9 @@ export default function FeaturedProductCard({ content }) {
     DMSans_700Bold,
   });
 
-  if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
-  } else {
+  if (fontsLoaded) {
+    //   return <Loading />;
+    // } else {
     return (
       <CardDiv
         onPress={() =>
@@ -92,7 +108,7 @@ export default function FeaturedProductCard({ content }) {
           <CardTitle>{content?.name}</CardTitle>
           <CardSubtitle>{formatPrice(content?.price)}</CardSubtitle>
 
-          <CardDetails>
+          {/* <CardDetails>
             <RatingContainer>
               <RatingIcon
                 resizeMode="cover"
@@ -104,8 +120,19 @@ export default function FeaturedProductCard({ content }) {
               {content?.total_reviews}&nbsp;
               {content?.total_reviews > 1 ? "reviews" : "review"}
             </DetailsText>
-          </CardDetails>
+          </CardDetails> */}
         </Card>
+
+        {/* <AddWLIcon>
+          <StyledIcon
+            source={
+              false
+                ? require("../assets/icons/ic_menu_wishlist.png")
+                : require("../assets/icons/ic_menu_wishlist_outline.png")
+            }
+            size={22}
+          />
+        </AddWLIcon> */}
       </CardDiv>
     );
   }

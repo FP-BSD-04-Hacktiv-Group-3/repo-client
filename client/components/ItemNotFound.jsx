@@ -5,6 +5,7 @@ import {
   DMSans_400Regular,
   DMSans_500Medium,
 } from "@expo-google-fonts/dm-sans";
+import Loading from "./Loading";
 
 const Container = styled.View`
   padding: 60px 24px;
@@ -51,9 +52,9 @@ export default function ItemNotFound({ image, title, subtitle }) {
     DMSans_500Medium,
   });
 
-  if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
-  } else {
+  if (fontsLoaded) {
+    //   return <Loading />;
+    // } else {
     return (
       <Container>
         <InnerContainer>

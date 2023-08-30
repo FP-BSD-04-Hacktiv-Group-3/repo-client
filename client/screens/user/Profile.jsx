@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar";
 import styled from "styled-components/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   useFonts,
@@ -11,6 +12,8 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import Loading from "../../components/Loading";
+import { useEffect, useState } from "react";
 
 const profile = {
   name: "Benedict C",
@@ -141,6 +144,7 @@ const LogoutBtnText = styled.Text`
 
 export default function Profile() {
   const navigation = useNavigation();
+  const [user, setUser] = useState("");
 
   let [fontsLoaded] = useFonts({
     DMSans_400Regular,
@@ -148,8 +152,24 @@ export default function Profile() {
     DMSans_700Bold,
   });
 
+  useEffect(() => {
+    async function fetchData() {
+      // const savedUser = await AsyncStorage.getItem("access_token");
+      const savedUser = await AsyncStorage.getItem("user");
+      console.log(savedUser);
+      setUser(JSON.parse(savedUser));
+    }
+    fetchData();
+  }, []);
+
+  const logout = async (e) => {
+    e.preventDefault();
+    await AsyncStorage.removeItem("access_token");
+    navigation.navigate("UnAuthNavStack");
+  };
+
   if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
+    return <Loading />;
   } else {
     return (
       <View style={{ flex: 1 }}>
@@ -171,7 +191,7 @@ export default function Profile() {
 
             <HeaderDetailsDiv>
               <HeaderTitle>{profile.name}</HeaderTitle>
-              <HeaderSubitle>{profile.email}</HeaderSubitle>
+              <HeaderSubitle>{user?.email || "Anonymous"}</HeaderSubitle>
             </HeaderDetailsDiv>
 
             <HeaderPressable
@@ -213,7 +233,7 @@ export default function Profile() {
 
           <Separator />
 
-          <LogoutBtnDiv>
+          <LogoutBtnDiv onPress={logout}>
             <MaterialIcons name="logout" size={22} color="#0C1A30" />
             <LogoutBtnText>Keluar</LogoutBtnText>
           </LogoutBtnDiv>

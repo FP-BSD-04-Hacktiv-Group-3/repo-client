@@ -1,5 +1,10 @@
 import { Text } from "react-native";
 import styled from "styled-components/native";
+import { useNavigation } from "@react-navigation/native";
+import { gql, useMutation } from "@apollo/client";
+import { useState } from "react";
+import { Toast } from "toastify-react-native";
+import Loading from "../../components/Loading";
 
 import {
   useFonts,
@@ -7,6 +12,17 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+
+const REGISTER = gql`
+  mutation AddUser($newUser: UserInput) {
+    addUser(newUser: $newUser) {
+      _id
+      email
+      password
+      role
+    }
+  }
+`;
 
 const Container = styled.View`
   height: 100%;
@@ -71,63 +87,120 @@ const LoginFooterContainer = styled.View`
   margin-top: 60px;
 `;
 
-const RegisterNavDiv = styled.View`
+const LoginNavDiv = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-top: 30px;
-  gap: 8px;
+  align-items: center;
 `;
 
-const RegisterText = styled.Text`
+const LoginText = styled.Text`
   color: gray;
   font-size: 14px;
   font-family: DMSans_500Medium;
 `;
 
-const RegisterLink = styled.Text`
+const LoginLinkDiv = styled.Pressable`
+  padding: 10px 8px;
+`;
+
+const LoginLink = styled.Text`
   color: #bb4648;
   font-size: 14px;
   font-family: DMSans_500Medium;
 `;
 
 export default function Register() {
+  const navigation = useNavigation();
+  const [registerFunc, { data, loading, error }] = useMutation(REGISTER);
+
   let [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
     DMSans_700Bold,
   });
 
+  const initialFormState = {
+    email: "",
+    password: "",
+  };
+
+  const [form, setForm] = useState({
+    ...initialFormState,
+  });
+
+  const onChange = (name, value) => {
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      if (!form.email || !form.password) {
+        throw { name: "InvalidLogin" };
+      }
+
+      const { data } = await registerFunc({
+        variables: { newUser: form },
+      });
+
+      const _id = await data?.addUser?._id;
+
+      if (_id) {
+        Toast.success("Registration Success!");
+        setForm(initialFormState);
+        navigation.navigate("LoginPage");
+      } else {
+        Toast.error("Registration Failed!");
+      }
+    } catch (error) {
+      console.log(error);
+      Toast.error("Registration Failed!");
+    }
+  };
+
+  if (loading) return <Loading />;
+
   if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
+    return <Loading />;
   } else {
     return (
       <Container>
         <HeadingTitle>Buat Akun</HeadingTitle>
         <HeadingSubtitle>Masukkan detail untuk membuat akun</HeadingSubtitle>
         <Form>
-          <Label>Username</Label>
-          <Input placeholder="Username" placeholderTextColor="#C4C5C4" />
-          <Label>Nomor Telepon</Label>
-          <Input placeholder="Nomor Telepon" placeholderTextColor="#C4C5C4" />
           <Label>Email</Label>
-          <Input placeholder="Email" placeholderTextColor="#C4C5C4" />
+          <Input
+            placeholder="Email"
+            placeholderTextColor="#C4C5C4"
+            name="email"
+            defaultValue={form.email}
+            onChangeText={(val) => onChange("email", val)}
+          />
           <Label>Kata Sandi</Label>
           <Input
             placeholder="Password"
             placeholderTextColor="#C4C5C4"
             secureTextEntry
+            name="password"
+            defaultValue={form.password}
+            onChangeText={(val) => onChange("password", val)}
           />
-          <Button>
-            <ButtonText>Masuk</ButtonText>
+          <Button onPress={handleRegister}>
+            <ButtonText>Submit</ButtonText>
           </Button>
         </Form>
 
         <LoginFooterContainer>
-          <RegisterNavDiv>
-            <RegisterText>Punya akun?</RegisterText>
-            <RegisterLink>Masuk</RegisterLink>
-          </RegisterNavDiv>
+          <LoginNavDiv>
+            <LoginText>Punya akun?</LoginText>
+            <LoginLinkDiv onPress={() => navigation.navigate("LoginPage")}>
+              <LoginLink>Masuk</LoginLink>
+            </LoginLinkDiv>
+          </LoginNavDiv>
         </LoginFooterContainer>
       </Container>
     );

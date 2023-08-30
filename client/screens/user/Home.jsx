@@ -1,12 +1,14 @@
 import { FlatList, Text, View } from "react-native";
 import styled from "styled-components/native";
 import Navbar from "../../components/Navbar";
-import Search from "../../components/Search";
+import SearchMock from "../../components/SearchMock";
 import Banner from "../../components/Banner";
 import Category from "../../components/Category";
 import FeaturedProductCard from "../../components/FeaturedProductCard";
 import ItemNotFound from "../../components/ItemNotFound";
 import { useNavigation } from "@react-navigation/native";
+import Loading from "../../components/Loading";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   useFonts,
@@ -14,6 +16,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import { useEffect } from "react";
 
 const ads = [
   {
@@ -54,7 +57,7 @@ const categories = [
   },
   {
     id: "6",
-    name: "Function",
+    name: "Others",
     image: require("../../assets/categories/functionIconBg.png"),
   },
 ];
@@ -162,17 +165,28 @@ const BannerAds2 = styled.Image`
   resize-mode: contain;
 `;
 
+const SearchDiv = styled.Pressable``;
+
 export default function Home() {
   const navigation = useNavigation();
 
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
     DMSans_700Bold,
   });
 
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     // const savedUser = await AsyncStorage.getItem("access_token");
+  //     const savedUser = await AsyncStorage.getItem("user");
+  //     // console.log(savedUser, 123);
+  //   }
+  //   fetchData();
+  // }, []);
+
   if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
+    return <Loading />;
   } else {
     return (
       <View style={{ paddingBottom: 80 }}>
@@ -183,7 +197,9 @@ export default function Home() {
           showsVerticalScrollIndicator={false}
           style={{ marginTop: 1 }}
         >
-          <Search />
+          <SearchDiv onPress={() => navigation.navigate("SearchPage")}>
+            <SearchMock />
+          </SearchDiv>
 
           {products.length === 0 ? (
             <ItemNotFound

@@ -9,6 +9,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import Loading from "../../components/Loading";
 
 const Container = styled.View`
   flex: 1;
@@ -82,7 +83,7 @@ export default function AddStoreForm() {
   });
 
   if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
+    return <Loading />;
   } else {
     return (
       <Container>

@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Text } from "react-native";
 import { useFonts, DMSans_500Medium } from "@expo-google-fonts/dm-sans";
+import Loading from "./Loading";
 
 const NavDiv = styled.View`
   height: 80px;
@@ -57,9 +58,9 @@ export default function Navbar({ back, title }) {
     DMSans_500Medium,
   });
 
-  if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
-  } else {
+  if (fontsLoaded) {
+    //   return <Loading />;
+    // } else {
     return (
       <NavDiv>
         {back ? (

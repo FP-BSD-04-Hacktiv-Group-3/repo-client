@@ -11,6 +11,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import Loading from "../../components/Loading";
 
 const DATA = [
   {
@@ -233,6 +234,21 @@ const QuantityBtnText = styled.Text`
   width: 20px;
 `;
 
+const StockContainer = styled.View`
+  padding: 4px 0px;
+  background: #eefaf6;
+  border-radius: 100px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+`;
+
+const StockText = styled.Text`
+  color: #3a9b7a;
+  font-size: 10px;
+  font-family: DMSans_500Medium;
+`;
+
 export default function Cart() {
   let [fontsLoaded] = useFonts({
     DMSans_400Regular,
@@ -241,7 +257,7 @@ export default function Cart() {
   });
 
   if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
+    return <Loading />;
   } else {
     return (
       <Container>
@@ -274,7 +290,21 @@ export default function Cart() {
                           <ProductName>{item.name}</ProductName>
 
                           <Price>{formatPrice(item.price)}</Price>
-                          <CardDetails>
+
+                          {true ? (
+                            <StockContainer>
+                              <StockText>Stok Tesedia</StockText>
+                            </StockContainer>
+                          ) : (
+                            <StockContainer
+                              style={{ backgroundColor: "#EE636E" }}
+                            >
+                              <StockText style={{ color: "white" }}>
+                                Stok Habis
+                              </StockText>
+                            </StockContainer>
+                          )}
+                          {/* <CardDetails>
                             <RatingContainer>
                               <RatingIcon
                                 resizeMode="cover"
@@ -286,7 +316,7 @@ export default function Cart() {
                               {item?.total_reviews}&nbsp;
                               {item?.total_reviews > 1 ? "reviews" : "review"}
                             </DetailsText>
-                          </CardDetails>
+                          </CardDetails> */}
                         </ProductDetailsTextDiv>
                       </ProductDetails>
                       <QuantityContainer>
