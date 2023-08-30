@@ -11,6 +11,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import Loading from "../../components/Loading";
 
 const items = [
   {
@@ -103,7 +104,7 @@ export default function Orders() {
   });
 
   if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
+    return <Loading />;
   } else {
     return (
       <View style={{ flex: 1 }}>

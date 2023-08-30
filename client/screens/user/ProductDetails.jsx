@@ -12,6 +12,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import Loading from "../../components/Loading";
 
 const ProductDetailsData = {
   name: "DIY Embroidery Stater Kit - Sunflower",
@@ -128,9 +129,11 @@ const DetailsText = styled.Text`
 `;
 
 const StockContainer = styled.View`
-  padding: 4px 8px;
+  padding: 6px 8px;
   background: #eefaf6;
   border-radius: 100px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 `;
 
 const StockText = styled.Text`
@@ -263,7 +266,7 @@ export default function ProductDetails({ item }) {
   });
 
   if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
+    return <Loading />;
   } else {
     return (
       <View style={{ flex: 1 }}>
@@ -299,22 +302,19 @@ export default function ProductDetails({ item }) {
           <DFSubtitleDiv>
             <DFPrice>{formatPrice(ProductDetailsData.price)}</DFPrice>
 
-            {/* kalo user */}
-            <DFSubtitleIconDiv>
-              <StyledIcon
-                source={require("../../assets/icons/ic_menu_wishlist_outline.png")}
-                size={22}
-              />
-              <Ionicons
-                name="md-chatbubble-ellipses-outline"
-                size={22}
-                color="#0C1A30"
-              />
-            </DFSubtitleIconDiv>
+            {true ? (
+              <StockContainer>
+                <StockText>Stok Tesedia</StockText>
+              </StockContainer>
+            ) : (
+              <StockContainer style={{ backgroundColor: "#EE636E" }}>
+                <StockText style={{ color: "white" }}>Stok Habis</StockText>
+              </StockContainer>
+            )}
           </DFSubtitleDiv>
 
           <DFSubtitleDiv>
-            <DFSubtitleIconDiv>
+            {/* <DFSubtitleIconDiv>
               <RatingContainer>
                 <RatingIcon
                   resizeMode="cover"
@@ -326,12 +326,31 @@ export default function ProductDetails({ item }) {
                 {ProductDetailsData?.total_reviews}&nbsp;
                 {ProductDetailsData?.total_reviews > 1 ? "reviews" : "review"}
               </DetailsText>
+            </DFSubtitleIconDiv> */}
+
+            {/* <View /> */}
+            <DFSubtitleIconDiv>
+              <StyledIcon
+                source={require("../../assets/icons/ic_menu_wishlist_outline.png")}
+                size={28}
+              />
+              <Ionicons
+                name="md-chatbubble-ellipses-outline"
+                size={28}
+                color="#0C1A30"
+              />
             </DFSubtitleIconDiv>
-            <StockContainer>
-              <StockText>
-                Tersedia: {ProductDetailsData?.total_stocks}
-              </StockText>
-            </StockContainer>
+
+            {/* Tersedia: {ProductDetailsData?.total_stocks} */}
+            {/* {false ? (
+              <StockContainer>
+                <StockText>Stok Tesedia</StockText>
+              </StockContainer>
+            ) : (
+              <StockContainer style={{ backgroundColor: "#EE636E" }}>
+                <StockText style={{ color: "white" }}>Stok Habis</StockText>
+              </StockContainer>
+            )} */}
           </DFSubtitleDiv>
 
           {/* kalo user */}

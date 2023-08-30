@@ -1,4 +1,4 @@
-import { FlatList, Text, View } from "react-native";
+import { FlatList, ScrollView, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Navbar from "../../components/Navbar";
 import styled from "styled-components/native";
@@ -10,6 +10,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import Loading from "../../components/Loading";
 
 const items = [
   {
@@ -80,7 +81,7 @@ export default function Wishlist() {
   });
 
   if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
+    return <Loading />;
   } else {
     return (
       <View style={{ flex: 1 }}>
@@ -94,14 +95,28 @@ export default function Wishlist() {
           <HeaderTitle>Wishlist</HeaderTitle>
 
           <Container>
-            <FlatList
+            {/* <FlatList
               showsVerticalScrollIndicator={false}
               horizontal={false}
               numColumns={2}
               data={items}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => <AllProductCard content={item} />}
-            />
+            /> */}
+
+            <ScrollView>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                }}
+              >
+                {items?.map((item, index) => (
+                  <AllProductCard content={item} key={index} />
+                ))}
+              </View>
+            </ScrollView>
           </Container>
         </ScrollDiv>
       </View>

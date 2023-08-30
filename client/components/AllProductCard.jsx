@@ -9,6 +9,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import Loading from "./Loading";
 
 const CardDiv = styled.Pressable`
   width: 50%;
@@ -76,9 +77,9 @@ export default function AllProductCard({ content }) {
     DMSans_700Bold,
   });
 
-  if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
-  } else {
+  if (fontsLoaded) {
+    //   return <Loading />;
+    // } else {
     return (
       <CardDiv
         onPress={() =>
@@ -92,7 +93,7 @@ export default function AllProductCard({ content }) {
           <CardTitle>{content?.name}</CardTitle>
           <CardSubtitle>{formatPrice(content?.price)}</CardSubtitle>
 
-          <CardDetails>
+          {/* <CardDetails>
             <RatingContainer>
               <RatingIcon
                 resizeMode="cover"
@@ -104,7 +105,7 @@ export default function AllProductCard({ content }) {
               {content?.total_reviews}&nbsp;
               {content?.total_reviews > 1 ? "reviews" : "review"}
             </DetailsText>
-          </CardDetails>
+          </CardDetails> */}
         </Card>
       </CardDiv>
     );

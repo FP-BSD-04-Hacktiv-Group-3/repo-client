@@ -1,5 +1,11 @@
-import { Text, View } from "react-native";
+import { Text } from "react-native";
 import styled from "styled-components/native";
+import { useNavigation } from "@react-navigation/native";
+import { gql, useMutation } from "@apollo/client";
+import { useEffect, useState } from "react";
+import { Toast } from "toastify-react-native";
+import Loading from "../../components/Loading";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   useFonts,
@@ -7,6 +13,17 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+
+const LOGIN = gql`
+  mutation Login($login: LoginInput) {
+    login(login: $login) {
+      id
+      email
+      access_token
+      role
+    }
+  }
+`;
 
 const Container = styled.View`
   height: 100%;
@@ -67,63 +84,25 @@ const ButtonText = styled.Text`
   font-family: DMSans_500Medium;
 `;
 
-const Separator = styled.View`
-  margin-top: 20px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-`;
-
-const SeparatorLine = styled.View`
-  flex: 1;
-  height: 2px;
-  background-color: #c4c5c4;
-  margin-top: 4px;
-`;
-
-const SeparatorText = styled.Text`
-  color: #c4c5c4;
-  font-size: 14px;
-  font-family: DMSans_500Medium;
-`;
-
-const GoogleButtonContainer = styled.TouchableOpacity`
-  background-color: #db4437;
-  padding: 10px 20px;
-  border-radius: 5px;
-  align-items: center;
-`;
-
-const GoogleButtonText = styled.Text`
-  color: white;
-  font-size: 16px;
-`;
-
 const LoginFooterContainer = styled.View`
   margin-top: 60px;
-`;
-
-const ForgotPasswordLink = styled.Text`
-  color: #feaf27;
-  font-size: 14px;
-  font-family: DMSans_500Medium;
-  text-align: center;
 `;
 
 const RegisterNavDiv = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-top: 30px;
-  gap: 8px;
+  align-items: center;
 `;
 
 const RegisterText = styled.Text`
   color: gray;
   font-size: 14px;
   font-family: DMSans_500Medium;
+`;
+
+const RegisterLinkDiv = styled.Pressable`
+  padding: 10px 8px;
 `;
 
 const RegisterLink = styled.Text`
@@ -133,14 +112,74 @@ const RegisterLink = styled.Text`
 `;
 
 export default function Login() {
-  let [fontsLoaded] = useFonts({
+  const navigation = useNavigation();
+  const [loginFunc, { data, loading, error }] = useMutation(LOGIN);
+
+  const [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
     DMSans_700Bold,
   });
 
+  useEffect(() => {
+    async function fetchData() {
+      const savedUser = await AsyncStorage.getItem("access_token");
+      console.log(savedUser, 444);
+      if (savedUser) {
+        navigation.navigate("AuthNavStack");
+      }
+    }
+    fetchData();
+  }, []);
+
+  const initialFormState = {
+    email: "",
+    password: "",
+  };
+
+  const [form, setForm] = useState({
+    ...initialFormState,
+  });
+
+  const onChange = (name, value) => {
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      if (!form.email || !form.password) {
+        throw { name: "InvalidLogin" };
+      }
+
+      const { data } = await loginFunc({
+        variables: { login: form },
+      });
+
+      const at = await data?.login?.access_token;
+
+      if (at) {
+        await AsyncStorage.setItem("access_token", at);
+        await AsyncStorage.setItem("user", JSON.stringify(data?.login));
+        setForm(initialFormState);
+        navigation.navigate("AuthNavStack");
+      } else {
+        Toast.error("Invalid Email/Password!");
+      }
+    } catch (error) {
+      console.log(error);
+      Toast.error("Invalid Email/Password!");
+    }
+  };
+
+  if (loading) return <Loading />;
+  // if (error) return `Submission error! ${error.message}`;
+
   if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
+    return <Loading />;
   } else {
     return (
       <Container>
@@ -148,38 +187,42 @@ export default function Login() {
         <HeadingSubtitle>Silahkan masukan data untuk login</HeadingSubtitle>
         <Form>
           <Label>Email</Label>
-          <Input placeholder="Email" placeholderTextColor="#C4C5C4" />
+          <Input
+            placeholder="Email"
+            placeholderTextColor="#C4C5C4"
+            name="email"
+            defaultValue={form.email}
+            onChangeText={(val) => onChange("email", val)}
+          />
           <Label>Kata Sandi</Label>
           <Input
             placeholder="Password"
             placeholderTextColor="#C4C5C4"
             secureTextEntry
+            name="password"
+            defaultValue={form.password}
+            onChangeText={(val) => onChange("password", val)}
           />
-          <Button>
+          <Button onPress={handleLogin}>
             <ButtonText>Masuk</ButtonText>
           </Button>
         </Form>
 
-        <Separator>
+        {/* <Separator>
           <SeparatorLine />
           <SeparatorText>atau masuk dengan</SeparatorText>
           <SeparatorLine />
-        </Separator>
-
-        <View
-          style={{
-            height: "120px",
-            backgroundColor: "tomato",
-          }}
-        >
-          <Text style={{ textAlign: "center" }}>Nanti google button</Text>
-        </View>
+        </Separator> */}
 
         <LoginFooterContainer>
-          <ForgotPasswordLink>Lupa Password?</ForgotPasswordLink>
+          {/* <ForgotPasswordLink>Lupa Password?</ForgotPasswordLink> */}
           <RegisterNavDiv>
             <RegisterText>Belum punya akun?</RegisterText>
-            <RegisterLink>Register</RegisterLink>
+            <RegisterLinkDiv
+              onPress={() => navigation.navigate("RegisterPage")}
+            >
+              <RegisterLink>Daftar</RegisterLink>
+            </RegisterLinkDiv>
           </RegisterNavDiv>
         </LoginFooterContainer>
       </Container>

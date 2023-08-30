@@ -4,12 +4,13 @@ import AllProducts from "../screens/user/AllProducts";
 import Cart from "../screens/user/Cart";
 import ProductDetails from "../screens/user/ProductDetails";
 import InfoSeller from "../screens/user/InfoSeller";
+import SearchPage from "../screens/user/SearchPage";
 
 const Stack = createNativeStackNavigator();
 
 export default function HomeStack() {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator initialRouteName="HomePage">
       <Stack.Screen
         name="HomePage"
         component={Home}
@@ -41,6 +42,13 @@ export default function HomeStack() {
       <Stack.Screen
         name="InfoSellerPage"
         component={InfoSeller}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="SearchPage"
+        component={SearchPage}
         options={{
           headerShown: false,
         }}

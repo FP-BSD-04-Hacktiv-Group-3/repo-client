@@ -1,7 +1,7 @@
-import { FlatList, Text, View } from "react-native";
+import { FlatList, ScrollView, Text, View } from "react-native";
 import styled from "styled-components/native";
 import Navbar from "../../components/Navbar";
-import Search from "../../components/Search";
+import SearchMock from "../../components/SearchMock";
 import { useNavigation } from "@react-navigation/native";
 
 import {
@@ -11,6 +11,7 @@ import {
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
 import AllProductCard from "../../components/AllProductCard";
+import Loading from "../../components/Loading";
 
 const items = [
   {
@@ -193,6 +194,8 @@ const HeaderPressableText = styled.Text`
   font-family: DMSans_500Medium;
 `;
 
+const SearchDiv = styled.Pressable``;
+
 export default function InfoSeller() {
   const navigation = useNavigation();
 
@@ -203,7 +206,7 @@ export default function InfoSeller() {
   });
 
   if (!fontsLoaded) {
-    return <Text>Loading ...</Text>;
+    return <Loading />;
   } else {
     return (
       <Container>
@@ -259,17 +262,33 @@ export default function InfoSeller() {
 
           <View style={{ padding: 2 }}></View>
 
-          <Search />
+          <SearchDiv onPress={() => navigation.navigate("SearchPage")}>
+            <SearchMock />
+          </SearchDiv>
 
           <Container2>
-            <FlatList
+            {/* <FlatList
               showsVerticalScrollIndicator={false}
               horizontal={false}
               numColumns={2}
               data={items}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => <AllProductCard content={item} />}
-            />
+            /> */}
+
+            <ScrollView>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                }}
+              >
+                {items?.map((item, index) => (
+                  <AllProductCard content={item} key={index} />
+                ))}
+              </View>
+            </ScrollView>
           </Container2>
 
           <View style={{ padding: 12 }}></View>

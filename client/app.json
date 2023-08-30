@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icons/star.png",
     "userInterfaceStyle": "light",
+
     "splash": {
       "image": "./assets/icons/star.png",
       "resizeMode": "contain",
@@ -24,6 +25,14 @@
     "web": {
       "favicon": "./assets/icons/star.png"
     },
-    "plugins": ["@react-native-google-signin/google-signin"]
-  }
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Tacotta to access your camera."
+        }
+      ]
+    ]
+  },
+  "permissions": ["CAMERA", "CAMERA_ROLL"]
 }
