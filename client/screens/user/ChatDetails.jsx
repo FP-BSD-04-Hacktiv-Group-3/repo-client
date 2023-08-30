@@ -160,7 +160,7 @@ const ReceiverTimeText = styled(TimeText)`
   text-align: left;
 `;
 
-export default function ChatDetails({ route }) {
+export default function ChatDetails() {
   // const { data } = route.params; params = store id nya
   let docSnap;
   const ChatId = senderId + 1;
@@ -250,8 +250,8 @@ export default function ChatDetails({ route }) {
             <ProfilePict source={require("../../assets/profile/profile.png")} />
 
             <SectionContainer>
-              <UserUsername>John Doe</UserUsername>
-              <UserStatus>johndoe@email.com</UserStatus>
+              <UserUsername>Store Name ku</UserUsername>
+              <UserStatus>Username Admin</UserStatus>
             </SectionContainer>
           </UserContainer>
         </UserContainerDiv>

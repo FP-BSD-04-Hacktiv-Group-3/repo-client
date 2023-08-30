@@ -2,6 +2,8 @@ import { Text } from "react-native";
 import styled from "styled-components/native";
 import formatPrice from "../utils/formatPrice";
 import { useNavigation } from "@react-navigation/native";
+import Loading from "./Loading";
+import { useEffect, useState } from "react";
 
 import {
   useFonts,
@@ -9,7 +11,6 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
-import Loading from "./Loading";
 
 const CardDiv = styled.Pressable`
   width: 50%;
@@ -77,37 +78,52 @@ export default function AllProductCard({ content }) {
     DMSans_700Bold,
   });
 
-  if (fontsLoaded) {
-    //   return <Loading />;
-    // } else {
-    return (
-      <CardDiv
-        onPress={() =>
-          navigation.navigate("ProductDetailsPage", {
-            item: content,
-          })
-        }
-      >
-        <Card>
-          <CardImg source={content?.image} />
-          <CardTitle>{content?.name}</CardTitle>
-          <CardSubtitle>{formatPrice(content?.price)}</CardSubtitle>
+  const [img, setImg] = useState("");
 
-          {/* <CardDetails>
-            <RatingContainer>
-              <RatingIcon
-                resizeMode="cover"
-                source={require("../assets/icons/star.png")}
-              />
-              <DetailsText>{content?.rating}</DetailsText>
-            </RatingContainer>
-            <DetailsText>
-              {content?.total_reviews}&nbsp;
-              {content?.total_reviews > 1 ? "reviews" : "review"}
-            </DetailsText>
-          </CardDetails> */}
-        </Card>
-      </CardDiv>
-    );
+  useEffect(() => {
+    if (content?.Product) {
+      console.log(content?.Product?.Images[0].imageUrl, 33);
+      setImg(content?.Product?.Images[0].imageUrl);
+    } else if (content) {
+      setImg(content?.Images[0].imageUrl);
+    }
+  }, []);
+
+  if (!fontsLoaded) {
+    return <></>;
+  } else {
+    if (content.Product) {
+      return (
+        <CardDiv
+          onPress={() =>
+            navigation.navigate("ProductDetailsPage", {
+              id: content?.id,
+            })
+          }
+        >
+          <Card>
+            {img && <CardImg source={{ uri: img }} />}
+            <CardTitle>{content?.Product?.name}</CardTitle>
+            <CardSubtitle>{formatPrice(+content?.Product?.price)}</CardSubtitle>
+          </Card>
+        </CardDiv>
+      );
+    } else {
+      return (
+        <CardDiv
+          onPress={() =>
+            navigation.navigate("ProductDetailsPage", {
+              id: content?.id,
+            })
+          }
+        >
+          <Card>
+            {img && <CardImg source={{ uri: img }} />}
+            <CardTitle>{content?.name}</CardTitle>
+            <CardSubtitle>{formatPrice(+content?.price)}</CardSubtitle>
+          </Card>
+        </CardDiv>
+      );
+    }
   }
 }

@@ -1,4 +1,3 @@
-import { Text } from "react-native";
 import styled from "styled-components/native";
 import { useNavigation } from "@react-navigation/native";
 import { gql, useMutation } from "@apollo/client";
@@ -18,8 +17,6 @@ const REGISTER = gql`
     addUser(newUser: $newUser) {
       _id
       email
-      password
-      role
     }
   }
 `;
@@ -77,7 +74,7 @@ const Button = styled.TouchableOpacity`
 `;
 
 const ButtonText = styled.Text`
-  color: white;
+  color: #0c1a30;
   text-align: center;
   font-size: 14px;
   font-family: DMSans_500Medium;
@@ -112,6 +109,7 @@ const LoginLink = styled.Text`
 
 export default function Register() {
   const navigation = useNavigation();
+
   const [registerFunc, { data, loading, error }] = useMutation(REGISTER);
 
   let [fontsLoaded] = useFonts({
@@ -152,6 +150,7 @@ export default function Register() {
       if (_id) {
         Toast.success("Registration Success!");
         setForm(initialFormState);
+
         navigation.navigate("LoginPage");
       } else {
         Toast.error("Registration Failed!");

@@ -10,7 +10,7 @@ import GetStarted from "./screens/on-board/GetStarted";
 import AllProducts from "./screens/user/AllProducts";
 import store from "./stores";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { API_URL } from "./config/api";
+import { ORCH_API_URL } from "./config/api";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import OngkirForm from "./screens/user/OngkirForm";
@@ -19,7 +19,7 @@ import ToastManager from "toastify-react-native";
 const Stack = createNativeStackNavigator();
 
 const client = new ApolloClient({
-  uri: API_URL,
+  uri: ORCH_API_URL,
   cache: new InMemoryCache(),
 });
 
@@ -32,7 +32,7 @@ export default function App() {
             <StatusBar hidden />
             <ToastManager style={{ width: "100%" }} />
             <NavigationContainer>
-              <Stack.Navigator initialRouteName="UnAuthNavStack">
+              <Stack.Navigator initialRouteName="AuthStack">
                 <Stack.Screen
                   name="UnAuthNavStack"
                   component={AuthStack}
@@ -47,9 +47,23 @@ export default function App() {
                     headerShown: false,
                   }}
                 />
-                <Stack.Screen
+                {/* <Stack.Screen
                   name="OngkirForm"
                   component={OngkirForm}
+                  options={{
+                    headerShown: false,
+                  }}
+                /> */}
+                <Stack.Screen
+                  name="Splash"
+                  component={Splash}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="GetStarted"
+                  component={GetStarted}
                   options={{
                     headerShown: false,
                   }}

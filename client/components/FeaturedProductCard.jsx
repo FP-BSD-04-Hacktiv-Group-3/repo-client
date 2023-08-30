@@ -10,6 +10,7 @@ import {
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
 import Loading from "./Loading";
+import { useEffect, useState } from "react";
 
 const CardDiv = styled.Pressable`
   width: 150px;
@@ -92,47 +93,38 @@ export default function FeaturedProductCard({ content }) {
     DMSans_700Bold,
   });
 
-  if (fontsLoaded) {
-    //   return <Loading />;
-    // } else {
+  const [img, setImg] = useState("");
+
+  useEffect(() => {
+    console.log(content);
+    setImg(content?.Images[0]?.imageUrl);
+  }, [content]);
+
+  if (!fontsLoaded) {
+    return <></>;
+  } else {
     return (
       <CardDiv
         onPress={() =>
           navigation.navigate("ProductDetailsPage", {
-            item: content,
+            id: content?.id,
           })
         }
       >
         <Card>
-          <CardImg source={content?.image} />
-          <CardTitle>{content?.name}</CardTitle>
-          <CardSubtitle>{formatPrice(content?.price)}</CardSubtitle>
-
-          {/* <CardDetails>
-            <RatingContainer>
-              <RatingIcon
-                resizeMode="cover"
-                source={require("../assets/icons/star.png")}
-              />
-              <DetailsText>{content?.rating}</DetailsText>
-            </RatingContainer>
-            <DetailsText>
-              {content?.total_reviews}&nbsp;
-              {content?.total_reviews > 1 ? "reviews" : "review"}
-            </DetailsText>
-          </CardDetails> */}
+          {content ? (
+            <>
+              {/* <Text>{JSON.stringify(content?.Images[0].imageUrl)}</Text> */}
+              {img && (
+                <CardImg source={{ uri: content?.Images[0]?.imageUrl }} />
+              )}
+              <CardTitle>{content?.name}</CardTitle>
+              <CardSubtitle>{formatPrice(+content?.price)}</CardSubtitle>
+            </>
+          ) : (
+            <></>
+          )}
         </Card>
-
-        {/* <AddWLIcon>
-          <StyledIcon
-            source={
-              false
-                ? require("../assets/icons/ic_menu_wishlist.png")
-                : require("../assets/icons/ic_menu_wishlist_outline.png")
-            }
-            size={22}
-          />
-        </AddWLIcon> */}
       </CardDiv>
     );
   }

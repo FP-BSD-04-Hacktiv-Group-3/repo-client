@@ -56,6 +56,10 @@ const items = [
   },
 ];
 
+import { useEffect, useState } from "react";
+
+const URL = "https://b999-27-50-29-117.ngrok-free.app";
+
 const Container = styled.View`
   flex: 1;
 `;
@@ -199,18 +203,34 @@ const SearchDiv = styled.Pressable``;
 export default function InfoSeller() {
   const navigation = useNavigation();
 
+  const [products, setProducts] = useState([]);
+
   let [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
     DMSans_700Bold,
   });
 
+  useEffect(() => {
+    async function fetchProducts(storeId) {
+      const response = await fetch(URL + `/store/${+storeId}`, {
+        method: "get",
+      });
+      if (!response.ok) throw responseJSON.message;
+      const responseJSON = await response.json();
+      setProducts(responseJSON.Products);
+      console.log(responseJSON, 888);
+    }
+
+    fetchProducts(1);
+  }, []);
+
   if (!fontsLoaded) {
     return <Loading />;
   } else {
     return (
       <Container>
-        <Navbar back="back" title="Dashboard Penjual" />
+        <Navbar back="back" title="Dashboard Penjual" isOwner={false} />
 
         <ScrollDiv style={{ marginTop: 1 }}>
           <UserContainerDiv>
@@ -284,8 +304,8 @@ export default function InfoSeller() {
                   justifyContent: "space-between",
                 }}
               >
-                {items?.map((item, index) => (
-                  <AllProductCard content={item} key={index} />
+                {products?.map((product, index) => (
+                  <AllProductCard content={product} key={index} />
                 ))}
               </View>
             </ScrollView>

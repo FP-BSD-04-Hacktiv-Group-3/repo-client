@@ -8,6 +8,8 @@ import AddProductForm from "../screens/user/AddProductForm";
 import EditProductForm from "../screens/user/EditProductForm";
 import AddStoreForm from "../screens/user/AddStoreForm";
 import EditStoreForm from "../screens/user/EditStoreForm";
+import OngkirForm from "../screens/user/OngkirForm";
+import Payment from "../screens/user/Payment";
 
 const Stack = createNativeStackNavigator();
 
@@ -73,6 +75,20 @@ export default function ProfileStack() {
       <Stack.Screen
         name="Language"
         component={Language}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="OngkirForm"
+        component={OngkirForm}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={Payment}
         options={{
           headerShown: false,
         }}

@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import HomeStack from "./HomeStack";
 import ProfileStack from "./ProfileStack";
-import Wishlist from "../screens/user/Wishlist";
+import WishlistStack from "../navigators/WishlistStack";
 import ChatStack from "./ChatStack";
 import OrderStack from "./OrderStack";
 
@@ -55,7 +55,7 @@ export default function TabNav() {
       />
       <Tab.Screen
         name="Wishlist"
-        component={Wishlist}
+        component={WishlistStack}
         options={{
           tabBarIcon: ({ focused, color, size }) => {
             return (

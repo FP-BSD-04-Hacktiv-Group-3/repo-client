@@ -1,4 +1,3 @@
-import { Text } from "react-native";
 import styled from "styled-components/native";
 import { useNavigation } from "@react-navigation/native";
 import { gql, useMutation } from "@apollo/client";
@@ -20,7 +19,6 @@ const LOGIN = gql`
       id
       email
       access_token
-      role
     }
   }
 `;
@@ -78,7 +76,7 @@ const Button = styled.TouchableOpacity`
 `;
 
 const ButtonText = styled.Text`
-  color: white;
+  color: #0c1a30;
   text-align: center;
   font-size: 14px;
   font-family: DMSans_500Medium;
@@ -124,7 +122,6 @@ export default function Login() {
   useEffect(() => {
     async function fetchData() {
       const savedUser = await AsyncStorage.getItem("access_token");
-      console.log(savedUser, 444);
       if (savedUser) {
         navigation.navigate("AuthNavStack");
       }
