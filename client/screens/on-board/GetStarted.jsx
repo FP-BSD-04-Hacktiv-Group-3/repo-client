@@ -96,8 +96,8 @@ const ImgContainer = styled.View`
 `;
 
 // background: rgba(254, 175, 39, 0.07);
+//  background: rgba(187, 70, 72, 0.03);
 const ImgIconContainer = styled.View`
-  background: rgba(187, 70, 72, 0.03);
   border-radius: 100px 0 100px 0;
   padding: 20px;
   border: 2px solid black;

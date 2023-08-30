@@ -1,5 +1,6 @@
 import { Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { gql, useQuery } from "@apollo/client";
 import Navbar from "../../components/Navbar";
 import styled from "styled-components/native";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -12,6 +13,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+
 import Loading from "../../components/Loading";
 import { useEffect, useState } from "react";
 
@@ -28,6 +30,32 @@ const profile = {
 };
 
 const profile2 = null;
+
+const GET_USER_DETAILS = gql`
+  query GetUsers($getUserId: ID) {
+    getUser(id: $getUserId) {
+      _id
+      email
+      role
+      Profile {
+        _id
+        username
+        address
+        phoneNumber
+        userId
+      }
+      Store {
+        name
+        UserId
+        location
+        profileImg
+        updatedAt
+        totalProduct
+        createdAt
+      }
+    }
+  }
+`;
 
 const ScrollDiv = styled.ScrollView`
   background: white;
@@ -57,6 +85,9 @@ const HeaderImageDiv = styled.View`
 
 const HeaderImage = styled.Image`
   resize-mode: contain;
+  width: 160px;
+  height: 160px;
+  border-radius: 100px;
 `;
 
 const HeaderDetailsDiv = styled.View`
@@ -143,8 +174,11 @@ const LogoutBtnText = styled.Text`
 `;
 
 export default function Profile() {
-  const navigation = useNavigation();
   const [user, setUser] = useState("");
+  const navigation = useNavigation();
+  const { loading, error, data, refetch } = useQuery(GET_USER_DETAILS, {
+    getUserId: user?.id,
+  });
 
   let [fontsLoaded] = useFonts({
     DMSans_400Regular,
@@ -161,6 +195,16 @@ export default function Profile() {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    async function fetchDataUser() {
+      if (user?.id) {
+        refetch({ getUserId: user?.id });
+      }
+    }
+
+    fetchDataUser();
+  }, [user]);
 
   const logout = async (e) => {
     e.preventDefault();
@@ -186,21 +230,41 @@ export default function Profile() {
             </SettingsIcon>
 
             <HeaderImageDiv>
-              <HeaderImage source={profile.profile_pict} />
+              {/* <HeaderImage source={profile.profile_pict} /> */}
+              {data?.getUser?.Store?.profileImg ? (
+                <HeaderImage
+                  source={{ uri: data?.getUser?.Store?.profileImg }}
+                />
+              ) : (
+                <HeaderImage
+                  source={{
+                    uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                  }}
+                />
+              )}
             </HeaderImageDiv>
 
             <HeaderDetailsDiv>
-              <HeaderTitle>{profile.name}</HeaderTitle>
-              <HeaderSubitle>{user?.email || "Anonymous"}</HeaderSubitle>
+              {/* <Text>{JSON.stringify(user)}</Text>
+              <Text>{JSON.stringify(data)}</Text> */}
+              <HeaderTitle>
+                {data?.getUser?.Profile.username || "-"}
+              </HeaderTitle>
+              <HeaderSubitle>{data?.getUser?.email || "-"}</HeaderSubitle>
             </HeaderDetailsDiv>
 
             <HeaderPressable
               onPress={() =>
-                navigation.navigate(profile?.Store ? "MyStore" : "AddStoreForm")
+                navigation.navigate(
+                  profile?.Store ? "MyStore" : "AddStoreForm",
+                  {
+                    isOwner: false,
+                  }
+                )
               }
             >
-              <HeaderPressableText>
-                {profile?.Store ? "Manage Store" : "Create Store"}
+              <HeaderPressableText onPress={() => {}}>
+                {data?.getUser?.Store?.name ? "Manage Store" : "Create Store"}
               </HeaderPressableText>
             </HeaderPressable>
           </Header>
@@ -209,11 +273,11 @@ export default function Profile() {
             <StoreDiv>
               <StoreRow>
                 <IconImg source={require("../../assets/icons/store.png")} />
-                <StoreText>{profile.Store.name}</StoreText>
+                <StoreText>{data?.getUser?.Store?.name}</StoreText>
               </StoreRow>
               <StoreRow>
                 <IconImg source={require("../../assets/icons/location.png")} />
-                <StoreText>{profile.Store.location}</StoreText>
+                <StoreText>{data?.getUser?.Store?.location}</StoreText>
               </StoreRow>
               <StoreRow>
                 <IconImg source={require("../../assets/icons/time.png")} />
@@ -222,8 +286,10 @@ export default function Profile() {
               <StoreRow>
                 <IconImg source={require("../../assets/icons/box.png")} />
                 <StoreText>
-                  {profile.Store.total_products}&nbsp;
-                  {profile.Store.total_products > 1 ? "products" : "product"}
+                  {data?.getUser?.Store?.totalProduct}&nbsp;
+                  {data?.getUser?.Store?.totalProduct > 1
+                    ? "products"
+                    : "product"}
                 </StoreText>
               </StoreRow>
             </StoreDiv>

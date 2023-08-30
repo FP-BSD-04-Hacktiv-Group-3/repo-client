@@ -4,7 +4,9 @@ import Navbar from "../../components/Navbar";
 import styled from "styled-components/native";
 import Carousel from "react-native-snap-carousel";
 import formatPrice from "../../utils/formatPrice";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
+import { APP_API_URL } from "../../config/api";
+import axios from "axios";
 
 import {
   useFonts,
@@ -13,29 +15,30 @@ import {
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
 import Loading from "../../components/Loading";
+import { useEffect, useState } from "react";
 
-const ProductDetailsData = {
-  name: "DIY Embroidery Stater Kit - Sunflower",
-  images: [
-    {
-      id: "1",
-      product_img: require("../../assets/products/craft1.jpeg"),
-    },
-    { id: "2", product_img: require("../../assets/products/craft2.jpeg") },
-    { id: "3", product_img: require("../../assets/products/craft3.jpeg") },
-  ],
-  price: 85000,
-  rating: 5,
-  total_reviews: 29,
-  total_stocks: 199,
-  desc: "PREORDER - 5 Hari. Diy Sunflower Embroider Kit: Embroidery kit sudah lengkap dengan pola yg siap di sulam, tanpa harus di salin. Sudah lengkap dengan Embroidery Guide cocok untuk pemula. Mari semua kita semakin produktif dengan belajar menyulam bersama Knit Official.Id.",
-  Store: {
-    name: "Shop Larson Electronic",
-  },
-  User: {
-    username: "Maddison B",
-  },
-};
+// const ProductDetailsData = {
+//   name: "DIY Embroidery Stater Kit - Sunflower",
+//   images: [
+//     {
+//       id: "1",
+//       product_img: require("../../assets/products/craft1.jpeg"),
+//     },
+//     { id: "2", product_img: require("../../assets/products/craft2.jpeg") },
+//     { id: "3", product_img: require("../../assets/products/craft3.jpeg") },
+//   ],
+//   price: 85000,
+//   rating: 5,
+//   total_reviews: 29,
+//   total_stocks: 199,
+//   desc: "PREORDER - 5 Hari. Diy Sunflower Embroider Kit: Embroidery kit sudah lengkap dengan pola yg siap di sulam, tanpa harus di salin. Sudah lengkap dengan Embroidery Guide cocok untuk pemula. Mari semua kita semakin produktif dengan belajar menyulam bersama Knit Official.Id.",
+//   Store: {
+//     name: "Shop Larson Electronic",
+//   },
+//   User: {
+//     username: "Maddison B",
+//   },
+// };
 
 const ScrollDiv = styled.ScrollView`
   background: white;
@@ -196,6 +199,8 @@ const ButtonText2 = styled(ButtonText)`
   color: black;
 `;
 
+const BtnIcon = styled.Pressable``;
+
 const Separator = styled.View`
   background: #ededed;
   padding: 0.1px;
@@ -256,14 +261,32 @@ const DescText = styled.Text`
   font-family: DMSans_400Regular;
 `;
 
-export default function ProductDetails({ item }) {
+export default function ProductDetails({ route }) {
   const navigation = useNavigation();
+  const { id } = route.params;
 
   let [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
     DMSans_700Bold,
   });
+
+  const [isLiked, setIsLiked] = useState(false);
+  const [product, setProduct] = useState({});
+
+  useEffect(() => {
+    async function fetchProduct(_id) {
+      // console.log(_id, 333);
+      const data = await axios({
+        method: "GET",
+        url: `${APP_API_URL}/product/${_id}`,
+      });
+
+      setProduct(data?.data);
+    }
+
+    fetchProduct(id);
+  }, []);
 
   if (!fontsLoaded) {
     return <Loading />;
@@ -277,44 +300,43 @@ export default function ProductDetails({ item }) {
           showsVerticalScrollIndicator={false}
           style={{ marginTop: 1 }}
         >
-          <CarouselContainer>
-            <Carousel
-              data={ProductDetailsData.images}
-              renderItem={({ item }) => (
-                <CarouselItem>
-                  <CarouselImage source={item.product_img} />
-                  {/* <CarouselText>
-                      {item.id}/{DATA?.length}
-                    </CarouselText> */}
-                </CarouselItem>
-              )}
-              sliderWidth={Dimensions.get("window").width}
-              itemWidth={Dimensions.get("window").width * 0.79}
-            />
-          </CarouselContainer>
+          {product?.name && (
+            <>
+              <CarouselContainer>
+                <Carousel
+                  data={product.Images}
+                  renderItem={({ item }) => (
+                    <CarouselItem>
+                      <CarouselImage source={{ uri: item?.imageUrl }} />
+                    </CarouselItem>
+                  )}
+                  sliderWidth={Dimensions.get("window").width}
+                  itemWidth={Dimensions.get("window").width * 0.79}
+                />
+              </CarouselContainer>
 
-          <DetailsFrontmatterDiv>
-            <DetailsFrontmatterTitle>
-              {ProductDetailsData.name}
-            </DetailsFrontmatterTitle>
-          </DetailsFrontmatterDiv>
+              <DetailsFrontmatterDiv>
+                <DetailsFrontmatterTitle>
+                  {product?.name}
+                </DetailsFrontmatterTitle>
+              </DetailsFrontmatterDiv>
 
-          <DFSubtitleDiv>
-            <DFPrice>{formatPrice(ProductDetailsData.price)}</DFPrice>
+              <DFSubtitleDiv>
+                <DFPrice>{formatPrice(+product.price)}</DFPrice>
 
-            {true ? (
-              <StockContainer>
-                <StockText>Stok Tesedia</StockText>
-              </StockContainer>
-            ) : (
-              <StockContainer style={{ backgroundColor: "#EE636E" }}>
-                <StockText style={{ color: "white" }}>Stok Habis</StockText>
-              </StockContainer>
-            )}
-          </DFSubtitleDiv>
+                {product?.stockStatus === "Available" ? (
+                  <StockContainer>
+                    <StockText>Stok Tesedia</StockText>
+                  </StockContainer>
+                ) : (
+                  <StockContainer style={{ backgroundColor: "#EE636E" }}>
+                    <StockText style={{ color: "white" }}>Stok Habis</StockText>
+                  </StockContainer>
+                )}
+              </DFSubtitleDiv>
 
-          <DFSubtitleDiv>
-            {/* <DFSubtitleIconDiv>
+              <DFSubtitleDiv>
+                {/* <DFSubtitleIconDiv>
               <RatingContainer>
                 <RatingIcon
                   resizeMode="cover"
@@ -328,21 +350,30 @@ export default function ProductDetails({ item }) {
               </DetailsText>
             </DFSubtitleIconDiv> */}
 
-            {/* <View /> */}
-            <DFSubtitleIconDiv>
-              <StyledIcon
-                source={require("../../assets/icons/ic_menu_wishlist_outline.png")}
-                size={28}
-              />
-              <Ionicons
-                name="md-chatbubble-ellipses-outline"
-                size={28}
-                color="#0C1A30"
-              />
-            </DFSubtitleIconDiv>
+                {/* <View /> */}
+                <DFSubtitleIconDiv>
+                  {/* <BtnIcon onPress={() => navigation.navigate("Wishlist")}> */}
+                  <BtnIcon onPress={() => setIsLiked(!isLiked)}>
+                    {isLiked ? (
+                      <AntDesign name="heart" size={28} color="red" />
+                    ) : (
+                      <StyledIcon
+                        source={require("../../assets/icons/ic_menu_wishlist_outline.png")}
+                        size={28}
+                      />
+                    )}
+                  </BtnIcon>
+                  <BtnIcon onPress={() => navigation.navigate("ChatDetails")}>
+                    <Ionicons
+                      name="md-chatbubble-ellipses-outline"
+                      size={28}
+                      color="#0C1A30"
+                    />
+                  </BtnIcon>
+                </DFSubtitleIconDiv>
 
-            {/* Tersedia: {ProductDetailsData?.total_stocks} */}
-            {/* {false ? (
+                {/* Tersedia: {ProductDetailsData?.total_stocks} */}
+                {/* {false ? (
               <StockContainer>
                 <StockText>Stok Tesedia</StockText>
               </StockContainer>
@@ -351,20 +382,20 @@ export default function ProductDetails({ item }) {
                 <StockText style={{ color: "white" }}>Stok Habis</StockText>
               </StockContainer>
             )} */}
-          </DFSubtitleDiv>
+              </DFSubtitleDiv>
 
-          {/* kalo user */}
-          <ButtonDiv>
-            <Button1>
-              <ButtonText1>Tambah ke keranjang</ButtonText1>
-            </Button1>
-            <Button2>
-              <ButtonText2>Beli Sekarang</ButtonText2>
-            </Button2>
-          </ButtonDiv>
+              {/* kalo user */}
+              <ButtonDiv>
+                <Button1>
+                  <ButtonText1>Tambah ke keranjang</ButtonText1>
+                </Button1>
+                <Button2>
+                  <ButtonText2>Beli Sekarang</ButtonText2>
+                </Button2>
+              </ButtonDiv>
 
-          {/* kalo produk nya si seller */}
-          {/* <ButtonDiv2>
+              {/* kalo produk nya si seller */}
+              {/* <ButtonDiv2>
             <Button1Seller
               onPress={() => navigation.navigate("EditProductForm")}
             >
@@ -375,25 +406,33 @@ export default function ProductDetails({ item }) {
             </Button2Seller>
           </ButtonDiv2> */}
 
-          <Separator />
-          <StoreDetailsDiv
-            onPress={() => navigation.navigate("InfoSellerPage")}
-          >
-            <ProfilePict source={require("../../assets/profile/profile.png")} />
+              <Separator />
+              <StoreDetailsDiv
+                onPress={() => navigation.navigate("InfoSellerPage")}
+              >
+                <ProfilePict
+                  source={require("../../assets/profile/profile.png")}
+                />
 
-            <SectionContainer>
-              <UserUsername>{ProductDetailsData?.Store?.name}</UserUsername>
-              <UserStatus>{ProductDetailsData?.User?.username}</UserStatus>
-            </SectionContainer>
+                <SectionContainer>
+                  <UserUsername>{product?.Store?.name}</UserUsername>
+                  {/* <UserStatus>{product?.User?.username}</UserStatus> */}
+                </SectionContainer>
 
-            <Ionicons name="chevron-forward-outline" size={24} color="black" />
-          </StoreDetailsDiv>
-          <Separator />
+                <Ionicons
+                  name="chevron-forward-outline"
+                  size={24}
+                  color="black"
+                />
+              </StoreDetailsDiv>
+              <Separator />
 
-          <DescDiv>
-            <DescTitle>Description Product</DescTitle>
-            <DescText>{ProductDetailsData.desc}</DescText>
-          </DescDiv>
+              <DescDiv>
+                <DescTitle>Description Product</DescTitle>
+                <DescText>{product?.description}</DescText>
+              </DescDiv>
+            </>
+          )}
         </ScrollDiv>
       </View>
     );

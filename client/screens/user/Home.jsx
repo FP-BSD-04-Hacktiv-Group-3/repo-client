@@ -9,6 +9,8 @@ import ItemNotFound from "../../components/ItemNotFound";
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../../components/Loading";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { APP_API_URL } from "../../config/api";
 
 import {
   useFonts,
@@ -16,7 +18,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const ads = [
   {
@@ -29,90 +31,94 @@ const ads = [
   },
 ];
 
-const categories = [
-  {
-    id: "1",
-    name: "Textile",
-    image: require("../../assets/categories/textileIconBg.png"),
-  },
-  {
-    id: "2",
-    name: "Decorative",
-    image: require("../../assets/categories/decorativeIconBg.png"),
-  },
-  {
-    id: "3",
-    name: "Paper",
-    image: require("../../assets/categories/paperIconBg.png"),
-  },
-  {
-    id: "4",
-    name: "Tribal",
-    image: require("../../assets/categories/tribalIconBg.png"),
-  },
-  {
-    id: "5",
-    name: "Function",
-    image: require("../../assets/categories/functionIconBg.png"),
-  },
-  {
-    id: "6",
-    name: "Others",
-    image: require("../../assets/categories/functionIconBg.png"),
-  },
-];
+// const categories = [
+//   {
+//     id: "1",
+//     name: "Textile",
+//     image: require("../../assets/categories/textileIconBg.png"),
+//   },
+//   {
+//     id: "2",
+//     name: "Decorative",
+//     image: require("../../assets/categories/decorativeIconBg.png"),
+//   },
+//   {
+//     id: "3",
+//     name: "Paper",
+//     image: require("../../assets/categories/paperIconBg.png"),
+//   },
+//   {
+//     id: "4",
+//     name: "Tribal",
+//     image: require("../../assets/categories/tribalIconBg.png"),
+//   },
+//   {
+//     id: "5",
+//     name: "Function",
+//     image: require("../../assets/categories/functionIconBg.png"),
+//   },
+//   {
+//     id: "6",
+//     name: "Others",
+//     image: require("../../assets/categories/functionIconBg.png"),
+//   },
+// ];
 
-const products = [
-  {
-    id: "1",
-    name: "Product 1",
-    price: 356000,
-    rating: 4,
-    total_reviews: 25,
-    image: require("../../assets/products/poster.png"),
-  },
-  {
-    id: "2",
-    name: "Product 2",
-    price: 356000,
-    rating: 5,
-    total_reviews: 1,
-    image: require("../../assets/products/poster.png"),
-  },
-  {
-    id: "3",
-    name: "Product 3",
-    price: 356000,
-    rating: 5,
-    total_reviews: 12,
-    image: require("../../assets/products/poster.png"),
-  },
-  {
-    id: "4",
-    name: "Product 4",
-    price: 356000,
-    rating: 4,
-    total_reviews: 33,
-    image: require("../../assets/products/poster.png"),
-  },
-  {
-    id: "5",
-    name: "Product 5",
-    price: 356000,
-    rating: 3,
-    total_reviews: 46,
-    image: require("../../assets/products/poster.png"),
-  },
-];
+// const products = [
+//   {
+//     id: "1",
+//     name: "Product 1",
+//     price: 356000,
+//     rating: 4,
+//     total_reviews: 25,
+//     image: require("../../assets/products/poster.png"),
+//   },
+//   {
+//     id: "2",
+//     name: "Product 2",
+//     price: 356000,
+//     rating: 5,
+//     total_reviews: 1,
+//     image: require("../../assets/products/poster.png"),
+//   },
+//   {
+//     id: "3",
+//     name: "Product 3",
+//     price: 356000,
+//     rating: 5,
+//     total_reviews: 12,
+//     image: require("../../assets/products/poster.png"),
+//   },
+//   {
+//     id: "4",
+//     name: "Product 4",
+//     price: 356000,
+//     rating: 4,
+//     total_reviews: 33,
+//     image: require("../../assets/products/poster.png"),
+//   },
+//   {
+//     id: "5",
+//     name: "Product 5",
+//     price: 356000,
+//     rating: 3,
+//     total_reviews: 46,
+//     image: require("../../assets/products/poster.png"),
+//   },
+// ];
 
-const products2 = [];
+// const products2 = [];
 
 const ScrollDiv = styled.ScrollView`
   background: white;
 `;
 
 const BannerDiv = styled.View`
-  padding: 0 0 24px 24px;
+  padding: 0 0 18px 24px;
+`;
+
+const BannerDiv2 = styled.View`
+  padding: 0 0 0px 24px;
 `;
 
 const HeaderContainer = styled.View`
@@ -142,7 +148,7 @@ const HeaderLink = styled.Text`
 const BannerAdsDiv = styled.View`
   width: 100%;
   padding: 0 10px 0 24px;
-  margin-bottom: 18px;
+  margin-bottom: 0px;
 `;
 
 const BannerAdsDivIn = styled.View`
@@ -153,9 +159,10 @@ const BannerAdsDivIn = styled.View`
 
 const BannerAds = styled.Image`
   width: 100%;
-  height: 180px;
+  height: 160px;
   padding-left: 10px;
   resize-mode: contain;
+  margin-bottom: 10px;
 `;
 
 const BannerAds2 = styled.Image`
@@ -176,14 +183,31 @@ export default function Home() {
     DMSans_700Bold,
   });
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     // const savedUser = await AsyncStorage.getItem("access_token");
-  //     const savedUser = await AsyncStorage.getItem("user");
-  //     // console.log(savedUser, 123);
-  //   }
-  //   fetchData();
-  // }, []);
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      const { data } = await axios({
+        method: "GET",
+        url: `${APP_API_URL}/categories`,
+      });
+      // console.log(data, 666666);
+      setCategories(data.data);
+    }
+
+    async function fetchProduct() {
+      const { data } = await axios({
+        method: "GET",
+        url: `${APP_API_URL}/product`,
+      });
+      // console.log(data, 123123123);
+      setProducts(data);
+    }
+
+    fetchProduct();
+    fetchCategories();
+  }, []);
 
   if (!fontsLoaded) {
     return <Loading />;
@@ -202,11 +226,7 @@ export default function Home() {
           </SearchDiv>
 
           {products.length === 0 ? (
-            <ItemNotFound
-              image={require("../../assets/vector/pnf.png")}
-              title="Produk tidak ditemukan"
-              subtitle="Coba cari kata lain untuk mencari produk yang kamu inginkan"
-            />
+            <></>
           ) : (
             <>
               <BannerDiv>
@@ -227,32 +247,34 @@ export default function Home() {
                 />
               </BannerDiv>
 
-              <BannerDiv style={{ marginTop: 10 }}>
-                <HeaderContainer>
-                  <HeaderTitle>Featured Products</HeaderTitle>
-                  <HeaderLinkDiv>
-                    <HeaderLink
-                      onPress={() =>
-                        navigation.navigate("AllProductsPage", {
-                          title: "Featured Products",
-                          items: products,
-                        })
-                      }
-                    >
-                      See All
-                    </HeaderLink>
-                  </HeaderLinkDiv>
-                </HeaderContainer>
+              {Array.isArray(products) && (
+                <BannerDiv2 style={{ marginTop: 10 }}>
+                  <HeaderContainer>
+                    <HeaderTitle>Featured Products</HeaderTitle>
+                    <HeaderLinkDiv>
+                      <HeaderLink
+                        onPress={() =>
+                          navigation.navigate("AllProductsPage", {
+                            title: "Featured Products",
+                            items: products,
+                          })
+                        }
+                      >
+                        See All
+                      </HeaderLink>
+                    </HeaderLinkDiv>
+                  </HeaderContainer>
 
-                <FlatList
-                  showsHorizontalScrollIndicator={false}
-                  horizontal
-                  data={products}
-                  renderItem={({ item }) => (
-                    <FeaturedProductCard content={item} />
-                  )}
-                />
-              </BannerDiv>
+                  <FlatList
+                    showsHorizontalScrollIndicator={false}
+                    horizontal
+                    data={products?.slice(0, 6)}
+                    renderItem={({ item }) => (
+                      <FeaturedProductCard content={item} />
+                    )}
+                  />
+                </BannerDiv2>
+              )}
 
               <BannerAdsDiv>
                 <BannerAdsDivIn>
@@ -262,121 +284,63 @@ export default function Home() {
                 </BannerAdsDivIn>
               </BannerAdsDiv>
 
-              <BannerDiv>
-                <HeaderContainer>
-                  <HeaderTitle>Best Sellers</HeaderTitle>
-                  <HeaderLinkDiv>
-                    <HeaderLink
-                      onPress={() =>
-                        navigation.navigate("AllProductsPage", {
-                          title: "Best Sellers",
-                          items: products,
-                        })
-                      }
-                    >
-                      See All
-                    </HeaderLink>
-                  </HeaderLinkDiv>
-                </HeaderContainer>
+              {Array.isArray(products) && (
+                <BannerDiv2>
+                  <HeaderContainer>
+                    <HeaderTitle>Best Sellers</HeaderTitle>
+                    <HeaderLinkDiv>
+                      <HeaderLink
+                        onPress={() =>
+                          navigation.navigate("AllProductsPage", {
+                            title: "Best Sellers",
+                            items: products,
+                          })
+                        }
+                      >
+                        See All
+                      </HeaderLink>
+                    </HeaderLinkDiv>
+                  </HeaderContainer>
 
-                <FlatList
-                  showsHorizontalScrollIndicator={false}
-                  horizontal
-                  data={products}
-                  renderItem={({ item }) => (
-                    <FeaturedProductCard content={item} />
-                  )}
-                />
-              </BannerDiv>
-
-              <BannerAdsDiv>
-                <BannerAdsDivIn>
-                  <BannerAds2
-                    source={require("../../assets/ads/modular_headphones.png")}
+                  <FlatList
+                    showsHorizontalScrollIndicator={false}
+                    horizontal
+                    data={products?.slice(0, 6)}
+                    renderItem={({ item }) => (
+                      <FeaturedProductCard content={item} />
+                    )}
                   />
-                </BannerAdsDivIn>
-              </BannerAdsDiv>
+                </BannerDiv2>
+              )}
 
-              <BannerDiv>
-                <HeaderContainer>
-                  <HeaderTitle>New Arrivals</HeaderTitle>
-                  <HeaderLinkDiv>
-                    <HeaderLink
-                      onPress={() =>
-                        navigation.navigate("AllProductsPage", {
-                          title: "New Arrivals",
-                          items: products,
-                        })
-                      }
-                    >
-                      See All
-                    </HeaderLink>
-                  </HeaderLinkDiv>
-                </HeaderContainer>
+              {Array.isArray(products) && (
+                <BannerDiv2>
+                  <HeaderContainer>
+                    <HeaderTitle>New Arrivals</HeaderTitle>
+                    <HeaderLinkDiv>
+                      <HeaderLink
+                        onPress={() =>
+                          navigation.navigate("AllProductsPage", {
+                            title: "New Arrivals",
+                            items: products,
+                          })
+                        }
+                      >
+                        See All
+                      </HeaderLink>
+                    </HeaderLinkDiv>
+                  </HeaderContainer>
 
-                <FlatList
-                  showsHorizontalScrollIndicator={false}
-                  horizontal
-                  data={products}
-                  renderItem={({ item }) => (
-                    <FeaturedProductCard content={item} />
-                  )}
-                />
-              </BannerDiv>
-
-              <BannerDiv>
-                <HeaderContainer>
-                  <HeaderTitle>Top Related Products</HeaderTitle>
-                  <HeaderLinkDiv>
-                    <HeaderLink
-                      onPress={() =>
-                        navigation.navigate("AllProductsPage", {
-                          title: "Top Related Products",
-                          items: products,
-                        })
-                      }
-                    >
-                      See All
-                    </HeaderLink>
-                  </HeaderLinkDiv>
-                </HeaderContainer>
-
-                <FlatList
-                  showsHorizontalScrollIndicator={false}
-                  horizontal
-                  data={products}
-                  renderItem={({ item }) => (
-                    <FeaturedProductCard content={item} />
-                  )}
-                />
-              </BannerDiv>
-
-              <BannerDiv>
-                <HeaderContainer>
-                  <HeaderTitle>Special Offers</HeaderTitle>
-                  <HeaderLinkDiv>
-                    <HeaderLink
-                      onPress={() =>
-                        navigation.navigate("AllProductsPage", {
-                          title: "Special Offers",
-                          items: products,
-                        })
-                      }
-                    >
-                      See All
-                    </HeaderLink>
-                  </HeaderLinkDiv>
-                </HeaderContainer>
-
-                <FlatList
-                  showsHorizontalScrollIndicator={false}
-                  horizontal
-                  data={products}
-                  renderItem={({ item }) => (
-                    <FeaturedProductCard content={item} />
-                  )}
-                />
-              </BannerDiv>
+                  <FlatList
+                    showsHorizontalScrollIndicator={false}
+                    horizontal
+                    data={products?.slice(0, 6)}
+                    renderItem={({ item }) => (
+                      <FeaturedProductCard content={item} />
+                    )}
+                  />
+                </BannerDiv2>
+              )}
             </>
           )}
         </ScrollDiv>

@@ -1,11 +1,20 @@
 import styled from "styled-components/native";
+import { useNavigation } from "@react-navigation/native";
 
-const CategoryCard = styled.View`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  margin-right: 20px;
+// const CategoryCard = styled.View`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   gap: 6px;
+//   margin-right: 20px;
+// `;
+
+const CategoryCard = styled.Pressable`
+  border: 1px solid #c4c5c4;
+  padding: 6px 20px;
+  border-radius: 100px;
+  margin-right: 10px;
+  margin-top: 4px;
 `;
 
 const CategoryText = styled.Text``;
@@ -23,11 +32,20 @@ const Icon = styled.Image`
 `;
 
 export default function Category({ content }) {
+  const navigation = useNavigation();
+
   return (
-    <CategoryCard>
-      <IconDiv>
+    <CategoryCard
+      onPress={() =>
+        navigation.navigate("ProductPerCategory", {
+          category: content?.name,
+          id: content?.id,
+        })
+      }
+    >
+      {/* <IconDiv>
         <Icon source={content?.image} />
-      </IconDiv>
+      </IconDiv> */}
       <CategoryText>{content?.name}</CategoryText>
     </CategoryCard>
   );

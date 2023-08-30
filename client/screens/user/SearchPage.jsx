@@ -10,6 +10,8 @@ import { useNavigation } from "@react-navigation/native";
 import { Camera } from "expo-camera";
 import { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
+import axios from "axios";
+import { APP_API_URL } from "../../config/api";
 
 import {
   useFonts,
@@ -18,6 +20,7 @@ import {
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
 import Loading from "../../components/Loading";
+import AllProductCard from "../../components/AllProductCard";
 
 const products = [];
 
@@ -32,8 +35,6 @@ const Div = styled.View`
 `;
 
 const SearchDiv = styled.Pressable``;
-
-const URL = "https://90a9-27-50-29-117.ngrok.io";
 
 const Form = styled.View`
   margin: 20px 24px 0px 24px;
@@ -140,7 +141,7 @@ export default function Home() {
   });
 
   const [search, setSearch] = useState("");
-
+  const [products, setProducts] = useState([]);
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [camera, setCamera] = useState(null);
   const [image, setImage] = useState(null);
@@ -155,6 +156,19 @@ export default function Home() {
       setHasCameraPermission(cameraStatus.status === "granted");
     })();
   }, []);
+
+  useEffect(() => {
+    async function fetchProduct(product_name) {
+      const { data } = await axios({
+        method: "GET",
+        url: `${APP_API_URL}/product?productName=${product_name}`,
+      });
+      // console.log(data, 123123123);
+      setProducts(data);
+    }
+
+    fetchProduct(search);
+  }, [search]);
 
   const takePicture = async () => {
     // setLoading(true);
@@ -248,7 +262,7 @@ export default function Home() {
                 <View style={{ flex: 1, flexDirection: "row" }}>
                   <Camera
                     ref={(ref) => setCamera(ref)}
-                    style={{ flex: 1, aspectRatio: 1 }}
+                    style={{ flex: 1, aspectRatio: 3 / 4 }}
                     type={type}
                     ratio={"1:1"}
                   />
@@ -328,8 +342,24 @@ export default function Home() {
                 />
                 <Text style={{ textAlign: "center" }}>{search}</Text>
               </>
+            ) : Array.isArray(products) && products?.length > 0 ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                }}
+              >
+                {products?.map((item, index) => (
+                  <AllProductCard content={item} key={index} />
+                ))}
+              </View>
             ) : (
-              <Text style={{ textAlign: "center" }}>{search}</Text>
+              <ItemNotFound
+                image={require("../../assets/vector/pnf.png")}
+                title="Produk tidak ditemukan"
+                subtitle="Coba cari kata lain untuk mencari produk yang kamu inginkan"
+              />
             )}
           </Div>
         </ScrollDiv>

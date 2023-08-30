@@ -12,6 +12,9 @@ import {
 } from "@expo-google-fonts/dm-sans";
 import AllProductCard from "../../components/AllProductCard";
 import Loading from "../../components/Loading";
+import { useEffect } from "react";
+
+const URL = "https://b999-27-50-29-117.ngrok-free.app";
 
 const items = [
   {
@@ -196,7 +199,7 @@ const HeaderPressableText = styled.Text`
 
 const SearchDiv = styled.Pressable``;
 
-export default function MyStore() {
+export default function MyStore({ route }) {
   const navigation = useNavigation();
 
   let [fontsLoaded] = useFonts({
@@ -205,12 +208,25 @@ export default function MyStore() {
     DMSans_700Bold,
   });
 
+  useEffect(() => {
+    async function fetchProducts(storeId) {
+      const response = await fetch(URL + `/store/${+storeId}`, {
+        method: "get",
+      });
+      if (!response.ok) throw responseJSON.message;
+      const responseJSON = await response.json();
+      console.log(responseJSON, 888);
+    }
+
+    fetchProducts(1);
+  }, []);
+
   if (!fontsLoaded) {
     return <Loading />;
   } else {
     return (
       <Container>
-        <Navbar back="back" title="Dashboard Penjual" />
+        <Navbar back="back" title="Dashboard Penjual" isOwner={true} />
 
         <ScrollDiv style={{ marginTop: 1 }}>
           <UserContainerDiv>

@@ -20,20 +20,20 @@ const chatData = [
       "Hello, bole nanya” tentang produk tipe s ga? Mau ngecek dulu aja sih",
     last_chat_time: "4.33 pm",
   },
-  {
-    id: 2,
-    receiver: "Matias J",
-    receiver_profile_pict: require("../../assets/profile/profile.png"),
-    last_chat: "Oke, thanks ya",
-    last_chat_time: "4.33 pm",
-  },
-  {
-    id: 3,
-    receiver: "Clark K",
-    receiver_profile_pict: require("../../assets/profile/profile.png"),
-    last_chat: "Baik min, trima kasih",
-    last_chat_time: "4.33 pm",
-  },
+  // {
+  //   id: 2,
+  //   receiver: "Matias J",
+  //   receiver_profile_pict: require("../../assets/profile/profile.png"),
+  //   last_chat: "Oke, thanks ya",
+  //   last_chat_time: "4.33 pm",
+  // },
+  // {
+  //   id: 3,
+  //   receiver: "Clark K",
+  //   receiver_profile_pict: require("../../assets/profile/profile.png"),
+  //   last_chat: "Baik min, trima kasih",
+  //   last_chat_time: "4.33 pm",
+  // },
 ];
 
 const ScrollDiv = styled.ScrollView`

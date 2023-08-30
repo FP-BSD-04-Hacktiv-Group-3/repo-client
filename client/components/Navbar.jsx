@@ -1,7 +1,7 @@
 import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { useFonts, DMSans_500Medium } from "@expo-google-fonts/dm-sans";
 import Loading from "./Loading";
 
@@ -51,7 +51,7 @@ const Title = styled.Text`
   text-align: center;
 `;
 
-export default function Navbar({ back, title }) {
+export default function Navbar({ back, title, isOwner }) {
   const navigation = useNavigation();
 
   let [fontsLoaded] = useFonts({
@@ -92,13 +92,17 @@ export default function Navbar({ back, title }) {
         title === "Tambah Store" ? (
           <NavIconDiv />
         ) : title === "Dashboard Penjual" ? (
-          <NavIconDiv onPress={() => navigation.navigate("EditStoreForm")}>
-            <NavIcon
-              source={require("../assets/icons/edit.png")}
-              resizeMode="contain"
-              EditStoreForm
-            />
-          </NavIconDiv>
+          isOwner ? (
+            <NavIconDiv onPress={() => navigation.navigate("EditStoreForm")}>
+              <NavIcon
+                source={require("../assets/icons/edit.png")}
+                resizeMode="contain"
+                EditStoreForm
+              />
+            </NavIconDiv>
+          ) : (
+            <NavIconDiv />
+          )
         ) : (
           <NavIconDiv onPress={() => navigation.navigate("CartPage")}>
             <NavIcon

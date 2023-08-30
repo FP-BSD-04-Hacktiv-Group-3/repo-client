@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar";
 import Checkbox from "expo-checkbox";
 import formatPrice from "../../utils/formatPrice";
 import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 import {
   useFonts,
@@ -250,6 +251,8 @@ const StockText = styled.Text`
 `;
 
 export default function Cart() {
+  const navigation = useNavigation();
+
   let [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
@@ -356,7 +359,7 @@ export default function Cart() {
         <ChekoutNavDiv>
           <CheckoutNavTitle>Total Belanja</CheckoutNavTitle>
           <CheckoutNavSubtitle>Rp 175.000</CheckoutNavSubtitle>
-          <CheckoutButton>
+          <CheckoutButton onPress={() => navigation.navigate("OngkirForm")}>
             <CheckoutButtonText>Beli</CheckoutButtonText>
           </CheckoutButton>
         </ChekoutNavDiv>

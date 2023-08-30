@@ -3,6 +3,10 @@ import { useNavigation } from "@react-navigation/native";
 import Navbar from "../../components/Navbar";
 import styled from "styled-components/native";
 import AllProductCard from "../../components/AllProductCard";
+import Loading from "../../components/Loading";
+import axios from "axios";
+import { APP_API_URL } from "../../config/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   useFonts,
@@ -10,50 +14,8 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
-import Loading from "../../components/Loading";
-
-const items = [
-  {
-    id: "1",
-    name: "Product 1",
-    price: 356000,
-    rating: 4,
-    total_reviews: 25,
-    image: require("../../assets/products/poster.png"),
-  },
-  {
-    id: "2",
-    name: "Product 2",
-    price: 356000,
-    rating: 5,
-    total_reviews: 1,
-    image: require("../../assets/products/poster.png"),
-  },
-  {
-    id: "3",
-    name: "Product 3",
-    price: 356000,
-    rating: 5,
-    total_reviews: 12,
-    image: require("../../assets/products/poster.png"),
-  },
-  {
-    id: "4",
-    name: "Product 4",
-    price: 356000,
-    rating: 4,
-    total_reviews: 33,
-    image: require("../../assets/products/poster.png"),
-  },
-  {
-    id: "5",
-    name: "Product 5",
-    price: 356000,
-    rating: 3,
-    total_reviews: 46,
-    image: require("../../assets/products/poster.png"),
-  },
-];
+import { useEffect, useState } from "react";
+import ItemNotFound from "../../components/ItemNotFound";
 
 const ScrollDiv = styled.ScrollView`
   background: white;
@@ -80,6 +42,29 @@ export default function Wishlist() {
     DMSans_700Bold,
   });
 
+  const [user, setUser] = useState("");
+  const [wishlists, setWishlists] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const savedUser = await AsyncStorage.getItem("user");
+      setUser(JSON.parse(savedUser));
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchWishlist() {
+      const data = await axios({
+        method: "GET",
+        url: `${APP_API_URL}/wishlist/${user?.id}`,
+      });
+      setWishlists(data?.data);
+    }
+
+    fetchWishlist();
+  }, [user]);
+
   if (!fontsLoaded) {
     return <Loading />;
   } else {
@@ -105,17 +90,25 @@ export default function Wishlist() {
             /> */}
 
             <ScrollView>
-              <View
-                style={{
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  justifyContent: "space-between",
-                }}
-              >
-                {items?.map((item, index) => (
-                  <AllProductCard content={item} key={index} />
-                ))}
-              </View>
+              {Array.isArray(wishlists) && wishlists?.length > 0 ? (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  {wishlists?.map((item, index) => (
+                    <AllProductCard content={item} key={index} />
+                  ))}
+                </View>
+              ) : (
+                <ItemNotFound
+                  image={require("../../assets/vector/pnf.png")}
+                  title="Produk tidak ditemukan"
+                  subtitle="Coba cari kata lain untuk mencari produk yang kamu inginkan"
+                />
+              )}
             </ScrollView>
           </Container>
         </ScrollDiv>
