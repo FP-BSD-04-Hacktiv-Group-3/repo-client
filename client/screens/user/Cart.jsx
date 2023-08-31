@@ -1,10 +1,14 @@
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import styled from "styled-components/native";
 import Navbar from "../../components/Navbar";
 import Checkbox from "expo-checkbox";
 import formatPrice from "../../utils/formatPrice";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { APP_API_URL } from "../../config/api";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   useFonts,
@@ -13,6 +17,7 @@ import {
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
 import Loading from "../../components/Loading";
+import { useEffect, useState } from "react";
 
 const DATA = [
   {
@@ -123,8 +128,8 @@ const ProductContainer = styled.View`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 14px;
-  padding: 20px 24px;
+  gap: 0px;
+  padding: 20px 8px;
 `;
 
 const ProductDetailsContainer = styled.View`
@@ -136,7 +141,7 @@ const ProductDetailsContainer = styled.View`
 const ProductDetails = styled.View`
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 12px;
 `;
 
 const ProductImg = styled.Image`
@@ -149,6 +154,7 @@ const ProductDetailsTextDiv = styled.View`
   gap: 8px;
   justify-content: center;
   padding: 0 4px;
+  flex: 1;
 `;
 
 const ProductName = styled.Text`
@@ -200,8 +206,9 @@ const Separator = styled.View`
 const QuantityContainer = styled.View`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  padding: 0 8px;
   align-items: center;
+  margin-bottom: 12px;
 `;
 
 const QuantityText = styled.Text`
@@ -242,6 +249,7 @@ const StockContainer = styled.View`
   margin-top: 8px;
   margin-bottom: 8px;
   align-items: center;
+  width: 100px;
 `;
 
 const StockText = styled.Text`
@@ -259,29 +267,159 @@ export default function Cart() {
     DMSans_700Bold,
   });
 
+  const [products, setProducts] = useState([]);
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    async function fetchUser() {
+      const savedUser = await AsyncStorage.getItem("user");
+      setUser(JSON.parse(savedUser));
+    }
+
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    async function fetchCart(_id) {
+      const { data } = await axios({
+        method: "GET",
+        url: `${APP_API_URL}/carts/${_id}`,
+      });
+
+      setProducts(data?.data);
+    }
+
+    fetchCart(user?.id);
+  }, [user]);
+
+  function addQuantity(itemId) {
+    const updatedProducts = products.map((p) =>
+      p.id === itemId
+        ? {
+            ...p,
+            quantity: p.quantity + 1,
+          }
+        : p
+    );
+
+    setProducts(updatedProducts);
+  }
+
+  function minQuantity(itemId) {
+    const updatedProducts = products.map((p) =>
+      p.id === itemId
+        ? {
+            ...p,
+            quantity: p.quantity == 0 ? p.quantity : p.quantity - 1,
+          }
+        : p
+    );
+
+    setProducts(updatedProducts);
+  }
+
   if (!fontsLoaded) {
     return <Loading />;
   } else {
     return (
       <Container>
         <Navbar back="back" title="Keranjang" />
-
+        {/* {products && <Text>{JSON.stringify(products)}</Text>} */}
         <ScrollDiv
           horizontal={false}
           showsVerticalScrollIndicator={false}
           style={{ marginTop: 1 }}
         >
-          {DATA?.map((store) => (
-            <StoreContainer key={store.id}>
-              <StoreNameContainer>
+          {products?.map((item) => (
+            <StoreContainer key={item.id}>
+              <View>
+                <ProductContainer>
+                  <Pressable style={{ width: 50 }}>
+                    {/* <Checkbox /> */}
+                    <MaterialIcons name="remove-circle" size={24} color="red" />
+                  </Pressable>
+
+                  <ProductDetailsContainer>
+                    <ProductDetails>
+                      <ProductImg
+                        resizeMode="cover"
+                        source={require("../../assets/products/wooden_wine.png")}
+                      />
+                      <ProductDetailsTextDiv>
+                        <StoreText>{item?.Product?.name}</StoreText>
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <FontAwesome5 name="store" size={12} color="black" />
+                          <ProductName style={{ marginLeft: 5 }}>
+                            {item?.Product?.Store?.name}
+                          </ProductName>
+                        </View>
+
+                        <Price>{formatPrice(+item?.Product?.price)}</Price>
+
+                        {/* todo */}
+                        {item?.Product?.stockStatus ? (
+                          <StockContainer>
+                            <StockText>Stok Tesedia</StockText>
+                          </StockContainer>
+                        ) : (
+                          <StockContainer
+                            style={{ backgroundColor: "#EE636E" }}
+                          >
+                            <StockText style={{ color: "white" }}>
+                              Stok Habis
+                            </StockText>
+                          </StockContainer>
+                        )}
+                      </ProductDetailsTextDiv>
+                    </ProductDetails>
+                  </ProductDetailsContainer>
+                </ProductContainer>
+                <QuantityContainer>
+                  <View style={{ width: 50 }}></View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      width: "80%",
+                    }}
+                  >
+                    <QuantityText>Quantity</QuantityText>
+                    <QuantityBtnDiv>
+                      <QuantityBtn onPress={() => minQuantity(item.id)}>
+                        <AntDesign name="minus" size={20} color="#C4C5C4" />
+                      </QuantityBtn>
+                      <QuantityAmountDiv>
+                        <QuantityAmountText>
+                          {+item.quantity}
+                        </QuantityAmountText>
+                      </QuantityAmountDiv>
+                      <QuantityBtn onPress={() => addQuantity(item.id)}>
+                        <AntDesign name="plus" size={20} color="#000" />
+                      </QuantityBtn>
+                    </QuantityBtnDiv>
+                  </View>
+                </QuantityContainer>
+                <Separator />
+              </View>
+
+              {/* <StoreNameContainer>
                 <Checkbox />
                 <StoreText>{store?.store_name}</StoreText>
-              </StoreNameContainer>
+              </StoreNameContainer> */}
 
-              {store?.Items.map((item) => (
+              {/* {store?.Items.map((item) => (
                 <View key={item.id}>
                   <ProductContainer>
-                    <Checkbox />
+                    <View style={{ width: 50 }}>
+                      <Checkbox />
+                    </View>
 
                     <ProductDetailsContainer>
                       <ProductDetails>
@@ -290,7 +428,23 @@ export default function Cart() {
                           source={require("../../assets/products/wooden_wine.png")}
                         />
                         <ProductDetailsTextDiv>
-                          <ProductName>{item.name}</ProductName>
+                          <StoreText StoreText>{item.name}</StoreText>
+
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <FontAwesome5
+                              name="store"
+                              size={12}
+                              color="black"
+                            />
+                            <ProductName style={{ marginLeft: 5 }}>
+                              {store?.store_name}
+                            </ProductName>
+                          </View>
 
                           <Price>{formatPrice(item.price)}</Price>
 
@@ -307,49 +461,39 @@ export default function Cart() {
                               </StockText>
                             </StockContainer>
                           )}
-                          {/* <CardDetails>
-                            <RatingContainer>
-                              <RatingIcon
-                                resizeMode="cover"
-                                source={require("../../assets/icons/star.png")}
-                              />
-                              <DetailsText>{item?.rating}</DetailsText>
-                            </RatingContainer>
-                            <DetailsText>
-                              {item?.total_reviews}&nbsp;
-                              {item?.total_reviews > 1 ? "reviews" : "review"}
-                            </DetailsText>
-                          </CardDetails> */}
                         </ProductDetailsTextDiv>
                       </ProductDetails>
-                      <QuantityContainer>
-                        <QuantityText>Quantity</QuantityText>
-                        <QuantityBtnDiv>
-                          <QuantityBtn>
-                            <AntDesign name="minus" size={20} color="#C4C5C4" />
-                            {/* <QuantityBtnText style={{ color: "#C4C5C4" }}>
-                              --
-                            </QuantityBtnText> */}
-                          </QuantityBtn>
-                          <QuantityAmountDiv>
-                            <QuantityAmountText>
-                              {item.quantity}
-                            </QuantityAmountText>
-                          </QuantityAmountDiv>
-                          <QuantityBtn>
-                            <AntDesign name="plus" size={20} color="#000" />
-                            {/* <QuantityBtnText style={{ color: "#000" }}>
-                              +
-                            </QuantityBtnText> */}
-                          </QuantityBtn>
-                        </QuantityBtnDiv>
-                      </QuantityContainer>
                     </ProductDetailsContainer>
                   </ProductContainer>
-
+                  <QuantityContainer>
+                    <View style={{ width: 50 }}></View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        width: "80%",
+                      }}
+                    >
+                      <QuantityText>Quantity</QuantityText>
+                      <QuantityBtnDiv>
+                        <QuantityBtn>
+                          <AntDesign name="minus" size={20} color="#C4C5C4" />
+                        </QuantityBtn>
+                        <QuantityAmountDiv>
+                          <QuantityAmountText>
+                            {item.quantity}
+                          </QuantityAmountText>
+                        </QuantityAmountDiv>
+                        <QuantityBtn>
+                          <AntDesign name="plus" size={20} color="#000" />
+                        </QuantityBtn>
+                      </QuantityBtnDiv>
+                    </View>
+                  </QuantityContainer>
                   <Separator />
                 </View>
-              ))}
+              ))} */}
             </StoreContainer>
           ))}
 

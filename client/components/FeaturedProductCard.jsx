@@ -96,7 +96,7 @@ export default function FeaturedProductCard({ content }) {
   const [img, setImg] = useState("");
 
   useEffect(() => {
-    console.log(content);
+    // console.log(content);
     setImg(content?.Images[0]?.imageUrl);
   }, [content]);
 

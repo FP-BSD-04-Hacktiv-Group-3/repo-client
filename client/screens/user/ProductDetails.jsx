@@ -7,6 +7,8 @@ import formatPrice from "../../utils/formatPrice";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { APP_API_URL } from "../../config/api";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Toast } from "toastify-react-native";
 
 import {
   useFonts,
@@ -273,6 +275,7 @@ export default function ProductDetails({ route }) {
 
   const [isLiked, setIsLiked] = useState(false);
   const [product, setProduct] = useState({});
+  const [user, setUser] = useState("");
 
   useEffect(() => {
     async function fetchProduct(_id) {
@@ -281,12 +284,37 @@ export default function ProductDetails({ route }) {
         method: "GET",
         url: `${APP_API_URL}/product/${_id}`,
       });
-
+      // console.log(data?.data, 33);
       setProduct(data?.data);
     }
 
+    async function fetchUser() {
+      const savedUser = await AsyncStorage.getItem("user");
+      setUser(JSON.parse(savedUser));
+    }
+
+    fetchUser();
     fetchProduct(id);
   }, []);
+
+  const addToCart = async () => {
+    const data = await axios({
+      method: "POST",
+      url: `${APP_API_URL}/carts/addCart`,
+      data: {
+        UserId: user?.id,
+        quantity: 1,
+        ProductId: id,
+        totalPrice: +product?.price,
+      },
+    });
+
+    if (data?.status === 201) {
+      navigation.navigate("CartPage");
+    } else {
+      Toast.error("Produk gagal ditambahkan!");
+    }
+  };
 
   if (!fontsLoaded) {
     return <Loading />;
@@ -336,20 +364,6 @@ export default function ProductDetails({ route }) {
               </DFSubtitleDiv>
 
               <DFSubtitleDiv>
-                {/* <DFSubtitleIconDiv>
-              <RatingContainer>
-                <RatingIcon
-                  resizeMode="cover"
-                  source={require("../../assets/icons/star.png")}
-                />
-                <DetailsText>{ProductDetailsData?.rating}</DetailsText>
-              </RatingContainer>
-              <DetailsText>
-                {ProductDetailsData?.total_reviews}&nbsp;
-                {ProductDetailsData?.total_reviews > 1 ? "reviews" : "review"}
-              </DetailsText>
-            </DFSubtitleIconDiv> */}
-
                 {/* <View /> */}
                 <DFSubtitleIconDiv>
                   {/* <BtnIcon onPress={() => navigation.navigate("Wishlist")}> */}
@@ -386,7 +400,7 @@ export default function ProductDetails({ route }) {
 
               {/* kalo user */}
               <ButtonDiv>
-                <Button1>
+                <Button1 onPress={() => addToCart()}>
                   <ButtonText1>Tambah ke keranjang</ButtonText1>
                 </Button1>
                 <Button2>

@@ -205,8 +205,8 @@ export default function Home() {
       setProducts(data);
     }
 
-    fetchProduct();
     fetchCategories();
+    fetchProduct();
   }, []);
 
   if (!fontsLoaded) {

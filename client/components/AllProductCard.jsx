@@ -82,7 +82,7 @@ export default function AllProductCard({ content }) {
 
   useEffect(() => {
     if (content?.Product) {
-      console.log(content?.Product?.Images[0].imageUrl, 33);
+      // console.log(content?.Product?.Images[0].imageUrl, 33);
       setImg(content?.Product?.Images[0].imageUrl);
     } else if (content) {
       setImg(content?.Images[0].imageUrl);

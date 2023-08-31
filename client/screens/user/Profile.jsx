@@ -190,7 +190,7 @@ export default function Profile() {
     async function fetchData() {
       // const savedUser = await AsyncStorage.getItem("access_token");
       const savedUser = await AsyncStorage.getItem("user");
-      console.log(savedUser);
+      // console.log(savedUser);
       setUser(JSON.parse(savedUser));
     }
     fetchData();
