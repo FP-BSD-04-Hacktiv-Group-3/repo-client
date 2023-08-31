@@ -305,7 +305,7 @@ export default function Home() {
                   <FlatList
                     showsHorizontalScrollIndicator={false}
                     horizontal
-                    data={products?.slice(0, 6)}
+                    data={products?.slice(-6)}
                     renderItem={({ item }) => (
                       <FeaturedProductCard content={item} />
                     )}
@@ -334,7 +334,7 @@ export default function Home() {
                   <FlatList
                     showsHorizontalScrollIndicator={false}
                     horizontal
-                    data={products?.slice(0, 6)}
+                    data={products?.slice(4, 10)}
                     renderItem={({ item }) => (
                       <FeaturedProductCard content={item} />
                     )}
