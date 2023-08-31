@@ -279,16 +279,16 @@ export default function Cart() {
     fetchUser();
   }, []);
 
+  async function fetchCart(_id) {
+    const { data } = await axios({
+      method: "GET",
+      url: `${APP_API_URL}/carts/${_id}`,
+    });
+
+    setProducts(data?.data);
+  }
+
   useEffect(() => {
-    async function fetchCart(_id) {
-      const { data } = await axios({
-        method: "GET",
-        url: `${APP_API_URL}/carts/${_id}`,
-      });
-
-      setProducts(data?.data);
-    }
-
     fetchCart(user?.id);
   }, [user]);
 
@@ -318,6 +318,18 @@ export default function Cart() {
     setProducts(updatedProducts);
   }
 
+  async function removeCart(cartId) {
+    // const updatedProducts = products.filter((p) => p.id !== cartId);
+    // // todo :=> delete cart
+    // const { data } = await axios({
+    //   method: "DELETE",
+    //   url: `${APP_API_URL}/carts/${_id}`,
+    // });
+    // setProducts(data?.data);
+    // setProducts(updatedProducts);
+    // fetchCart(user?.id);
+  }
+
   if (!fontsLoaded) {
     return <Loading />;
   } else {
@@ -334,7 +346,10 @@ export default function Cart() {
             <StoreContainer key={item.id}>
               <View>
                 <ProductContainer>
-                  <Pressable style={{ width: 50 }}>
+                  <Pressable
+                    style={{ width: 50 }}
+                    onPress={() => removeCart(item?.id)}
+                  >
                     {/* <Checkbox /> */}
                     <MaterialIcons name="remove-circle" size={24} color="red" />
                   </Pressable>
@@ -343,7 +358,7 @@ export default function Cart() {
                     <ProductDetails>
                       <ProductImg
                         resizeMode="cover"
-                        source={require("../../assets/products/wooden_wine.png")}
+                        source={{ uri: item?.Product?.Images[0]?.imageUrl }}
                       />
                       <ProductDetailsTextDiv>
                         <StoreText>{item?.Product?.name}</StoreText>
