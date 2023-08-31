@@ -59,6 +59,7 @@ export default function Wishlist() {
         method: "GET",
         url: `${APP_API_URL}/wishlist/${user?.id}`,
       });
+      // console.log(data?.data, 33);
       setWishlists(data?.data);
     }
 
